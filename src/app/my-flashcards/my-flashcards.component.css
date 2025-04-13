@@ -1,0 +1,65 @@
+.cards-light .card {
+  transition: 0.3s;
+  width: 300px;
+  height: 200px;
+  background: rgba(255, 255, 255, 0.1);
+  padding: 15px;
+  border-radius: 10px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
+  color: #333;
+}
+.cards-dark .card {
+  transition: 0.3s;
+  width: 300px;
+  height: 200px;
+  background: rgba(255, 255, 255, 0.1);
+  padding: 15px;
+  border-radius: 10px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
+  color: white;
+}
+.cards-light .card-footer{
+  color:#333;
+}
+.cards-dark .card-footer{
+  color:white;
+}
+.card:hover {
+  transform: scale(1.05);
+}
+
+
+.cardContainer {
+  width: fit-content;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.cards-light .flip-card {
+  position: relative;
+  width: 220px;
+  height: 250px;
+  background: rgba(255, 255, 255, 0.1);
+  padding: 15px;
+  border-radius: 10px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
+  color:#333;
+  transition: 0.3s;
+}
+.cards-dark .flip-card{
+  color:white;
+  position: relative;
+  width: 220px;
+  height: 250px;
+  background: rgba(255, 255, 255, 0.1);
+  padding: 15px;
+  border-radius: 10px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
+  transition: 0.3s;
+  text-align:center;
+}
+.flip-card:hover {
+  transform: scale(1.05);
+}

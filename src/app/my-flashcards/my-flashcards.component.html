@@ -1,0 +1,58 @@
+<div class="content d-flex flex-column justify-content-start align-items-center min-vh-100 w-100 gap-4 position-relative pt-5"
+  [ngClass]="{ 'cards-dark': !isLightTheme, 'cards-light': isLightTheme }">
+        @if (!selectedCategory) { 
+                <div class="text-center w-100 py-3 position-sticky top-0 shadow">
+                    <h3 class="fw-bold"><i class="fas fa-book"></i> All Flashcards</h3>
+                    <p class="text-secondary">Select a category to see the flashcards</p>
+                </div>
+
+                <div class="container py-4">
+                    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4 justify-content-center">
+                        @for (category of categories; track category) {
+                        <div class="col d-flex justify-content-center">
+                            <div class="card shadow-sm" (click)="selectCategory(category)">
+                                <div class="card-body text-center">
+                                    <h5 class="card-title mb-0">{{ category }}</h5>
+                                </div>
+                                <div class="card-footer">
+                                    Total: {{ flashcardsByCategory[category].length }} flashcards
+                                </div>
+                            </div>
+                        </div>
+                        }
+                    </div>
+                </div>
+                
+            
+        }
+        
+    @if (selectedCategory) {
+        <div class="d-flex flex-column justify-content-start align-items-center min-vh-100 w-100 gap-4 position-relative">
+        
+  
+            <h3 class="text-center w-100 py-3 position-sticky top-0 shadow">
+                {{ selectedCategory }}
+            </h3>
+        
+            <div class="container flex-grow-1 overflow-y-auto w-100 top-0 no-scrollbar pt-4">
+                <div class="row g-4 justify-content-center">
+                    @for (flashcard of selectedFlashcards; track flashcard.id) {
+                        <div class="col-12 col-sm-6 col-md-4 col-lg-3 d-flex justify-content-center">
+                            <div class="cardContainer">
+                                    <div class="flip-card">
+                                        <h5 class="card-title">{{ flashcard.question }}</h5>
+                                    </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        
+            <button class="btn btn-outline-primary rounded-pill position-fixed bottom-0 mb-3" (click)="resetCategory()">
+                Back to the Categories
+            </button>
+        
+        </div>
+
+    }
+</div>
