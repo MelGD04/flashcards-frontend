@@ -22,7 +22,9 @@ export class HomeComponent implements OnInit{
   constructor(private flashcardService:FlashcardsService, private themeService:ThemeService){}
 
   ngOnInit() {
-    this.flashcards = this.flashcardService.getFlashcards();
+    this.flashcardService.getFlashcards().subscribe((data) => {
+      this.flashcards = data;
+    });
     this.progressPercentage = this.flashcards.length > 0 ? 100 : 0;
 
     this.themeService.getTheme().subscribe((isLight) => {

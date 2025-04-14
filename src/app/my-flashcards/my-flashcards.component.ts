@@ -13,7 +13,8 @@ import { ThemeService } from '../services/theme.service';
   templateUrl: './my-flashcards.component.html',
   styleUrl: './my-flashcards.component.css'
 })
-export class MyFlashcardsComponent implements OnInit {
+export class MyFlashcardsComponent {
+  /* 
   categories: string[] = [];
   flashcardsByCategory: { [key: string]: Flashcard[] } = {};
   selectedCategory: string | null = null; // Para saber cuál categoría está seleccionada
@@ -49,4 +50,5 @@ export class MyFlashcardsComponent implements OnInit {
   toggleTheme() {
     this.themeService.toggleTheme();
   }
+    */
 }

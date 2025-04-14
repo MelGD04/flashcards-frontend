@@ -22,18 +22,9 @@ export class FavFlashcardsComponent implements OnInit{
   constructor(private flashcardServices: FlashcardsService, private themeService: ThemeService){}
 
   ngOnInit(): void {
-    this.favoriteFlashcards = this.flashcardServices.getFlashcardByFavorite(true);
-
     this.themeService.getTheme().subscribe((isLight) => {
       this.isLightTheme = isLight;
     });
-  }
-
-  @Input() card!: Flashcard;
-  @Output() flipCardEvent = new EventEmitter<Flashcard>();
-
-  flipCard() {
-    this.flipCardEvent.emit(this.card);
   }
   toggleTheme() {
     this.themeService.toggleTheme();

@@ -17,43 +17,66 @@ import { Flashcard } from '../models/flashcard.model';
 })
 export class FlashcardsComponent {
   flashcards: any[] = [];
+  currentIndex: number = 0;
+  showCard = true;
+  animation = '';
+  isFlipped = false;
   isLightTheme = true;
   totalCards = 0;
   revisedSet = new Set<number>();
+  errorMessage: string = '';
   
   constructor(public flashcardService: FlashcardsService, private themeService: ThemeService) { }
 
   ngOnInit() {
-    this.flashcards = this.flashcardService.getFlashcards();
+    this.flashcardService.getFlashcards().subscribe(
+      data => {
+        this.flashcards = data;  // Al recibir los datos, los almacena en 'flashcards'
+        this.errorMessage = '';  // Limpiar el mensaje de error en caso de éxito
+      },
+      error => {
+        this.errorMessage = 'Hubo un problema al obtener las flashcards. Por favor, intente de nuevo más tarde.';
+        console.error('Error al obtener flashcards', error);
+      }
+    );
     this.totalCards = this.flashcards.length;
 
     this.themeService.getTheme().subscribe((isLight) => {
       this.isLightTheme = isLight;
     });
   }
-  // Métodos para acceder a la lógica desde el servicio
-  flipCard() {
-    this.flashcardService.flipCard();
-  }
 
   nextCard() {
-    if (this.currentIndex < this.flashcards.length) {
-      this.currentIndex++;
-      this.flashcardService.nextCard();
+    this.animation = 'slide-out-left';
+    this.showCard = false;
 
-      // Si no se había revisado esta tarjeta, agrégala al set
-      this.revisedSet.add(this.currentIndex);
-    }
+    setTimeout(() => {
+      this.currentIndex = (this.currentIndex + 1) % this.flashcards.length;
+      this.animation = 'slide-in-right';
+      if (this.isFlipped) {
+        this.flipCard();
+      }
+      this.showCard = true;
+    }, 70);
   }
 
   previousCard() {
-    if (this.currentIndex > 0) {
-      // Quitamos del set si vamos hacia atrás
-      this.revisedSet.delete(this.currentIndex);
+    this.animation = 'slide-out-right';
+    this.showCard = false;
 
-      this.currentIndex--;
-      this.flashcardService.previousCard();
-    }
+    setTimeout(() => {
+      this.currentIndex = (this.currentIndex - 1 + this.flashcards.length) % this.flashcards.length;
+      this.animation = 'slide-in-left';
+      if (this.isFlipped) {
+        this.flipCard();
+      }
+      this.showCard = true;
+    }, 70);
+  }
+
+
+  flipCard() {
+    this.isFlipped = !this.isFlipped;
   }
 
   get revisedCards(): number {
@@ -61,11 +84,7 @@ export class FlashcardsComponent {
   }
 
   get currentCard() {
-    return this.flashcardService.currentCard;
-  }
-
-  get isFlipped() {
-    return this.flashcardService.isFlipped;
+    return this.flashcards[this.currentIndex];
   }
 
   isFavorite:boolean=false;
@@ -78,7 +97,6 @@ export class FlashcardsComponent {
     this.themeService.toggleTheme();
   }
 
-  currentIndex = 0;
 
   correctAnswers = 0;
   incorrectAnswers = 0;
