@@ -15,7 +15,7 @@ import { CommonModule } from '@angular/common';
   styleUrl: './home.component.css'
 })
 export class HomeComponent implements OnInit{
-  flashcards: Flashcard[] = [];
+  flashcards: any[] = [];
   progressPercentage = 0;
   isLightTheme = true;
 

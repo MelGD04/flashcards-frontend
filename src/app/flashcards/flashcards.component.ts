@@ -29,16 +29,9 @@ export class FlashcardsComponent {
   constructor(public flashcardService: FlashcardsService, private themeService: ThemeService) { }
 
   ngOnInit() {
-    this.flashcardService.getFlashcards().subscribe(
-      data => {
-        this.flashcards = data;  // Al recibir los datos, los almacena en 'flashcards'
-        this.errorMessage = '';  // Limpiar el mensaje de error en caso de éxito
-      },
-      error => {
-        this.errorMessage = 'Hubo un problema al obtener las flashcards. Por favor, intente de nuevo más tarde.';
-        console.error('Error al obtener flashcards', error);
-      }
-    );
+    this.flashcardService.getFlashcards().subscribe((data) => {
+      this.flashcards = data;
+    });
     this.totalCards = this.flashcards.length;
 
     this.themeService.getTheme().subscribe((isLight) => {
@@ -72,6 +65,10 @@ export class FlashcardsComponent {
       }
       this.showCard = true;
     }, 70);
+  }
+
+  isLoggedIn(): boolean {
+    return !!localStorage.getItem('access');
   }
 
 

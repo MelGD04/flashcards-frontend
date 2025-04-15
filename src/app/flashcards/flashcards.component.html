@@ -1,4 +1,4 @@
-@if(flashcards.length>0){
+@if(isLoggedIn() && flashcards.length>0){
 <main class="container d-flex flex-column justify-content-center align-items-center gap-4 vh-100"
     [ngClass]="{ 'cards-dark': !isLightTheme, 'cards-light': isLightTheme }">
     <!-- Filtros -->
@@ -108,7 +108,7 @@
 </main>
 
 }
-@if(flashcards.length===0){
+@else if(isLoggedIn() && flashcards.length===0){
     <div class="d-flex flex-column justify-content-center align-items-center vh-100" [ngClass]="{ 'cards-dark': !isLightTheme, 'cards-light': isLightTheme }">
         <div class="no-cards-message text-center mt-4 ">
             <i class="fas fa-exclamation-circle fa-3x text-warning"></i>
@@ -117,4 +117,15 @@
             <button class="btn btn-outline-primary rounded-pill" data-bs-toggle="modal" data-bs-target="#addFlashcardModal">Add Flashcard</button>
         </div>
     </div>
+}
+@else {
+<!-- Si no está logueado -->
+<div class="d-flex flex-column justify-content-center align-items-center vh-100"
+    [ngClass]="{ 'cards-dark': !isLightTheme, 'cards-light': isLightTheme }">
+    <div class="no-login text-center mt-4">
+        <i class="fas fa-lock fa-3x text-danger"></i>
+        <h3 class="mt-2">You must be logged in to see your flashcards</h3>
+        <p>Please log in to access your content.</p>
+    </div>
+</div>
 }
