@@ -1,0 +1,85 @@
+<!--Delete Flashcard Modal-->
+<div class="modal fade" id="deleteCardModal" aria-hidden="true" aria-labelledby="deleteCard" tabindex="-1"
+    [ngClass]="{ 'modal-dark': !isLightTheme, 'modal-light': isLightTheme }">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="deleteModalLabel">Delete Card</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                Are you sure you want to delete this card?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary rounded-pill w-25" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-danger rounded-pill w-25">Delete</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--Update Flashcard Modal-->
+<div class="modal fade" id="updateCardModal" aria-hidden="true" aria-labelledby="updateCard" tabindex="-1"
+    [ngClass]="{ 'modal-dark': !isLightTheme, 'modal-light': isLightTheme }">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Update Flashcard</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="mb-3">
+                        <label for="nameInput" class="form-label">New Question:</label>
+                        <input type="text" class="form-control rounded-pill" id="nameInput" placeholder="">
+                    </div>
+                </form>
+
+                <form>
+                    <div class="mb-3">
+                        <label for="nameInput" class="form-label">New Answer:</label>
+                        <input type="text" class="form-control rounded-pill" id="nameInput" placeholder="">
+                    </div>
+                </form>
+
+                <form>
+                    <div class="mb-3">
+                        <label class="form-label" for="inputGroupSelect01">New Category:</label>
+                        <select class="form-select rounded-pill" id="inputGroupSelect01">
+                            <option selected>Choose...</option>
+                            <option value="1">One</option>
+                            <option value="2">Two</option>
+                            <option value="3">Three</option>
+                        </select>
+                    </div>
+                </form>
+
+                <div class="mb-3">
+                    <label class="form-label d-block">New Difficulty Level:</label>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="dificultad" id="facil" value="fácil">
+                        <label class="form-check-label" for="facil">Easy</label>
+                    </div>
+
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="dificultad" id="intermedio"
+                            value="intermedio">
+                        <label class="form-check-label" for="intermedio">Intermediate</label>
+                    </div>
+
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="dificultad" id="dificil" value="difícil">
+                        <label class="form-check-label" for="dificil">Hard</label>
+                    </div>
+                </div>
+
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary rounded-pill w-25" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary rounded-pill w-25">Update</button>
+            </div>
+        </div>
+    </div>
+</div>
+

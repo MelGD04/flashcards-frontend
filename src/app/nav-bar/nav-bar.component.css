@@ -37,8 +37,16 @@
 }
 
 .navbar-dark .dropdown-menu {
-  background-color: #222;
   border: 1px solid #444;
+  background: rgba(25, 25, 25, 0);
+  backdrop-filter: blur(10px);
+  border-radius: 20px;
+}
+.navbar-light .dropdown-menu {
+  border: 1px solid #333;
+  background: rgba(25, 25, 25, 0.1);
+  backdrop-filter: blur(10px);
+  border-radius: 20px;
 }
 
 .navbar-dark .dropdown-menu .dropdown-item {
@@ -59,4 +67,13 @@
 .btn-outline-primary:hover {
   background: linear-gradient(135deg, #007bff, #0056b3);
   transition: background 0.3s ease-in-out;
+}
+.dropdown2-toggle::after {
+  display: none;
+}
+.dropdown2:hover .dropdown-menu {
+  display: block;
+  margin-top: 10px;
+  right: 10px;
+  left: auto;     
 }

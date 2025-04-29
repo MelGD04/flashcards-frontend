@@ -1,0 +1,139 @@
+<!--Modal del Login-->
+<div class="modal fade" id="loginModal" aria-hidden="true" aria-labelledby="login" tabindex="-1"
+    [ngClass]="{ 'modal-dark': !isLightTheme, 'modal-light': isLightTheme }">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalToggleLabel">Sign In</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body d-flex justify-content-center align-item-center flex-column">
+                <form (ngSubmit)="onLogin();">
+                    <div class="mb-3">
+                        <label for="nameInput" class="form-label">Username</label>
+                        <input type="text" class="form-control rounded-pill" id="nameInput"
+                            placeholder="Enter your username" [(ngModel)]="usernameLogin" name="username" required > 
+                    </div>
+                    <div class="mb-3">
+                        <label for="passInput" class="form-label">
+                            Password
+                        </label>
+                        <div class="input-group">
+                            <input type="password" class="form-control rounded-pill" id="passInput"
+                                autocomplete="new-password" [type]="showPassword ? 'text' : 'password'"
+                                placeholder="● ● ● ● ● ● ● ● ●" [(ngModel)]="passwordLogin" name="password" required>
+                            <button type="button"
+                                class="btn btn-outline-secondary position-absolute top-50 end-0 translate-middle-y me-2 border-0 bg-transparent"
+                                (click)="togglePassword()">
+                                <i [class]="showPassword ? 'fas fa-eye-slash' : 'fas fa-eye'"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary rounded-pill">Sign In</button>
+                </form>
+
+                
+            </div>
+            <div class="modal-footer">
+                <p>Don't you have a account?</p>
+                <button class="btn btn-primary" data-bs-target="#signUp" data-bs-toggle="modal">Sign Up</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!--Modal del Sign In-->
+<div class="modal fade" id="signUp" aria-hidden="true" aria-labelledby="exampleModalToggleLabel2" tabindex="-1"
+    [ngClass]="{ 'modal-dark': !isLightTheme, 'modal-light': isLightTheme }" >
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalToggleLabel2">Sign Up</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body d-flex justify-content-center algin-item-center flex-column">
+                <form (ngSubmit)="onSignup()">
+                    <div class="mb-3">
+                        <label for="nameImput" class="form-label">Name</label>
+                        <input type="text" class="form-control rounded-pill" id="nameInput"
+                            placeholder="Enter your name and your last name"
+                            [(ngModel)]="full_name" name="full_name" required>
+                    </div>
+                
+                    <div class="mb-3">
+                        <label for="nameInput" class="form-labet">Username</label>
+                        <input type="text" class="form-control rounded-pill" id="nameInput"
+                            placeholder="Enter a username"
+                            [(ngModel)]="usernameSignUp" name="usernameSignUp" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="nameInput" class="form-label">Email</label>
+                        <input type="email" class="form-control rounded-pill" id="nameInput"
+                            placeholder="name@gmail.com" [(ngModel)]="email" name="email" required      >
+                    </div>
+                    <div class="mb-3">
+                        <label for="passInput" class="form-label">Password</label>
+                        <div class="input-group">
+                            <input type="password" class="form-control rounded-pill" id="passInput"
+                                autocomplete="new-password" [type]="showPassword ? 'text' : 'password'"
+                                placeholder="● ● ● ● ● ● ● " [(ngModel)]="passwordSignUp" name="passwordSignUp" required>
+                            <button type="button"
+                                class="btn btn-outline-secondary position-absolute top-50 end-0 translate-middle-y me-2 border-0 bg-transparent"
+                                (click)="togglePassword()">
+                                <i [class]="showPassword ? 'fas fa-eye-slash' : 'fas fa-eye'"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <button type="button" class="btn btn-primary rounded-pill">Sign Up</button>
+                </form>
+
+               
+
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" data-bs-target="#loginModal" data-bs-toggle="modal">Back to
+                    Sign In</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!--signOut Modal-->
+<div class="modal fade" id="signOutModal" aria-hidden="true" aria-labelledby="signOut" tabindex="-1"
+    [ngClass]="{ 'modal-dark': !isLightTheme, 'modal-light': isLightTheme }">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="deleteModalLabel">Sign Out</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                Your session will be ended. Do you want to continue?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary rounded-pill w-25" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-danger rounded-pill w-25">Log Out</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--Delete Account Modal-->
+<div class="modal fade" id="deleteAccountModal" aria-hidden="true" aria-labelledby="deleteAccount" tabindex="-1"
+    [ngClass]="{ 'modal-dark': !isLightTheme, 'modal-light': isLightTheme }">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="deleteModalLabel">Delete Account</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                Warning: Deleting your account will permanently remove all your data, and you will not be able to recover it. Do you
+                wish to continue?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary rounded-pill w-25" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-danger rounded-pill w-25">Delete</button>
+            </div>
+        </div>
+    </div>
+</div>

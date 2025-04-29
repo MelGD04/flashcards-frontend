@@ -31,7 +31,6 @@
               "src/styles.css"
             ],
             "scripts": [
-              
             ],
             "server": "src/main.server.ts",
             "outputMode": "server",
@@ -97,7 +96,6 @@
               "src/styles.css"
             ],
             "scripts": [
-             
             ]
           }
         }

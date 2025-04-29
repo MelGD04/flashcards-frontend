@@ -1,7 +1,7 @@
 
 <div class="main-content" >
 
-   <nav class="navbar navbar-expand-lg navbar-custom fixed-top" [ngClass]="{ 'navbar-dark': !isLightTheme, 'navbar-light': isLightTheme }"
+   <nav class="navbar navbar-expand navbar-custom fixed-top" [ngClass]="{ 'navbar-dark': !isLightTheme, 'navbar-light': isLightTheme }"
   >
   <div class="container-fluid">
 
@@ -23,13 +23,13 @@
           </button>
           <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
       
-            <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#addFlashcardModal">➕ Add
+            <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#addFlashcardModal"><i class="fas fa-plus"></i> Add
                 Flashcard</a></li>
             <li>
               <hr class="dropdown-divider">
             </li>
-            <li><a class="dropdown-item" routerLink="fav-flashcards">⭐ Favorite</a></li>
-            <li><a class="dropdown-item" routerLink="my-flashcards">📚 My Flashcards</a></li>
+            <li><a class="dropdown-item" routerLink="fav-flashcards"><i class="fas fa-star"></i> Favorite</a></li>
+            <li><a class="dropdown-item" routerLink="my-flashcards"><i class="fas fa-book"></i>  My Flashcards</a></li>
       
           </ul>
         </div>
@@ -37,15 +37,40 @@
       </ul>
       
       <div class="d-flex gap-3">
-        <button class="btn btn-theme-toggle" (click)="toggleTheme()">
-          {{ isLightTheme ? '🌞 Light Theme' : '🌙 Dark Theme' }}
-        </button>
+        @if (isLightTheme) {
+          <button class="btn btn-theme-toggle" (click)="toggleTheme()">
+            <i class="fas fa-moon"></i> Dark Theme
+          </button>
+        }@else {
+          <button class="btn btn-theme-toggle" (click)="toggleTheme()">
+            <i class="fas fa-sun"></i> Light Theme
+          </button>
+        }
+        
 
         
-      
-        <a href="#" class="btn btn-outline-primary rounded-circle" data-bs-toggle="modal" data-bs-target="#loginModal">
-          <i class="fas fa-user"></i>
-        </a>
+        @if (!isLoggedIn) {
+          <a href="#" class="btn btn-outline-primary rounded-circle" data-bs-toggle="modal" data-bs-target="#loginModal">
+            <i class="fas fa-user"></i>
+          </a>
+        }@else{
+          <div class="dropdown2">
+            <a href="#" class="btn btn-outline-primary dropdown2-toggle rounded-circle" id="dropdownMenuButton"
+            data-bs-toggle="dropdown" aria-expanded="false">
+              <i class="fas fa-user"></i>
+            </a>
+            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton">
+            
+              <li><a href="#" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#signOutModal">
+                <i class="fas fa-sign-out-alt"></i> Sign Out
+              </a></li>
+              <li><hr class="dropdown-divider"></li>
+              <li><a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#deleteAccountModal"><i class="fas fa-trash"></i> Delete Account</a></li>
+            </ul>
+          </div>
+          
+        }   
+         
       </div>
 
     </div>
@@ -56,8 +81,9 @@
 
 <div class="content">
   <router-outlet></router-outlet>
-  <app-add-flashcard-modal></app-add-flashcard-modal>
+  
 </div>
 </div>
-
+<app-add-card-modal></app-add-card-modal>
+<app-auth-modal></app-auth-modal>
 

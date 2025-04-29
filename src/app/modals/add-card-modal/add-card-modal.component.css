@@ -67,10 +67,14 @@
   font-weight: bold;
   transition: background 0.3s ease-in-out;
 }
-
+.btn-danger {
+    background: linear-gradient(45deg, #ff416c, #ff4b2b);
+    border: none;
+}
 .btn-primary:hover {
   background: linear-gradient(135deg, #0056b3, #004080);
 }
+
 .modal-footer {
   background: rgba(0, 0, 0, 0.05);
   border-top: none;

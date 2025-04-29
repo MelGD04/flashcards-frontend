@@ -1,0 +1,64 @@
+<!--Add Flashcard Modal-->
+<div class="modal fade" id="addFlashcardModal" tabindex="-1" aria-labelledby="addFlashcard" aria-hidden="true"
+    [ngClass]="{ 'modal-dark': !isLightTheme, 'modal-light': isLightTheme }">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Add Flashcard</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="mb-3">
+                        <label for="nameInput" class="form-label">Question:</label>
+                        <input type="text" class="form-control rounded-pill" id="nameInput" placeholder="">
+                    </div>
+                </form>
+
+                <form>
+                    <div class="mb-3">
+                        <label for="nameInput" class="form-label">Answer:</label>
+                        <input type="text" class="form-control rounded-pill" id="nameInput" placeholder="">
+                    </div>
+                </form>
+
+                <form>
+                    <div class="mb-3">
+                        <label class="form-label" for="inputGroupSelect01">Category:</label>
+                        <select class="form-select rounded-pill" id="inputGroupSelect01">
+                            <option selected>Choose...</option>
+                            <option value="1">One</option>
+                            <option value="2">Two</option>
+                            <option value="3">Three</option>
+                        </select>
+                    </div>
+                </form>
+
+                <div class="mb-3">
+                    <label class="form-label d-block">Difficulty Level:</label>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="dificultad" id="facil" value="fácil">
+                        <label class="form-check-label" for="facil">Easy</label>
+                    </div>
+
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="dificultad" id="intermedio"
+                            value="intermedio">
+                        <label class="form-check-label" for="intermedio">Intermediate</label>
+                    </div>
+
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="dificultad" id="dificil" value="difícil">
+                        <label class="form-check-label" for="dificil">Hard</label>
+                    </div>
+                </div>
+
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary rounded-pill w-25" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary rounded-pill w-25">Add</button>
+            </div>
+        </div>
+    </div>
+</div>

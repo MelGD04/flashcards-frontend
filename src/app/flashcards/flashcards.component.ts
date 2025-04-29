@@ -1,17 +1,22 @@
+import { AuthService } from './../services/auth.service';
 import { ThemeService } from './../services/theme.service';
 
 import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FlashcardsService } from './../services/flashcards.service';
 import { Flashcard } from '../models/flashcard.model';
+import { CrudCardModalComponent } from "../modals/crud-card-modal/crud-card-modal.component";
+import { FilterModalComponent } from "../modals/filter-modal/filter-modal.component";
 
 
 
 @Component({
   selector: 'app-flashcards',
   imports: [
-    CommonModule
-  ],
+    CommonModule,
+    CrudCardModalComponent,
+    FilterModalComponent
+],
   templateUrl: './flashcards.component.html',
   styleUrl: './flashcards.component.css'
 })
@@ -22,21 +27,23 @@ export class FlashcardsComponent {
   animation = '';
   isFlipped = false;
   isLightTheme = true;
-  totalCards = 0;
   revisedSet = new Set<number>();
   errorMessage: string = '';
+  isFavorite: boolean = false;
+  isLoggedIn: boolean = false;
   
-  constructor(public flashcardService: FlashcardsService, private themeService: ThemeService) { }
+  constructor(public flashcardService: FlashcardsService, private themeService: ThemeService, private authService: AuthService) { }
 
   ngOnInit() {
     this.flashcardService.getFlashcards().subscribe((data) => {
       this.flashcards = data;
     });
-    this.totalCards = this.flashcards.length;
 
     this.themeService.getTheme().subscribe((isLight) => {
       this.isLightTheme = isLight;
     });
+
+    this.isLoggedIn = this.authService.isAuthenticated();
   }
 
   nextCard() {
@@ -67,10 +74,6 @@ export class FlashcardsComponent {
     }, 70);
   }
 
-  isLoggedIn(): boolean {
-    return !!localStorage.getItem('access');
-  }
-
 
   flipCard() {
     this.isFlipped = !this.isFlipped;
@@ -84,7 +87,6 @@ export class FlashcardsComponent {
     return this.flashcards[this.currentIndex];
   }
 
-  isFavorite:boolean=false;
 
   toggleFavorite(){
     this.isFavorite = !this.isFavorite;
@@ -100,12 +102,12 @@ export class FlashcardsComponent {
 
   markAsKnown() {
     this.correctAnswers++;
-    this.nextCard(); // o como avances
+    this.nextCard();
   }
 
   markAsUnknown() {
     this.incorrectAnswers++;
-    this.nextCard(); // o como avances
+    this.nextCard();
   }
 
   getAccuracy(): number {

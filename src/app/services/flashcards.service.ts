@@ -8,7 +8,7 @@ import { catchError, Observable, throwError } from "rxjs";
     providedIn: 'root'
 })
 export class FlashcardsService {
-    private apiUrl = 'http://127.0.0.1:8000/flashcards/';
+    private apiUrl = 'http://127.0.0.1:8000/api/cards/';
 
 
     constructor(private http: HttpClient) { }
