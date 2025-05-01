@@ -38,12 +38,6 @@ export class AuthModalComponent {
   usernameLogin: string = '';
   passwordLogin: string = '';
 
-  // Para el signup
-  full_name: string = '';
-  usernameSignUp: string = '';
-  email: string = '';
-  passwordSignUp: string = '';
-  errorMessage: string = '';
 
 
   onLogin() {
@@ -59,33 +53,35 @@ export class AuthModalComponent {
     });
   }
 
+ 
+
+  // Para el signup
+  full_name: string = '';
+  usernameSignUp: string = '';
+  email: string = '';
+  passwordSignUp: string = '';
+  errorMessage: string = '';
+
   onSignup() {
-    if (!this.full_name || !this.usernameSignUp || !this.email || !this.passwordSignUp) {
-      this.errorMessage = 'Por favor completa todos los campos.';
-      return;
-    }
+    this.authService.validateName(this.full_name).subscribe({
+      next: (res) => {
+        const name = res.name;
+        const last_name = res.last_name;
 
-    this.authService.signup(this.full_name, this.usernameSignUp, this.email, this.passwordSignUp)
-      .subscribe({
-        next: (res) => {
-          console.log('Registro exitoso:', res);
-        },
-        error: (err) => {
-          console.error('Error en el registro:', err);
-          this.errorMessage = err.error?.message || 'Error desconocido durante el registro.';
-        }
-      });
-  }
-
-  validateFullName() {
-    this.authService.validateFullName(this.full_name).subscribe(
-      response => {
-        console.log('Validación exitosa:', response);
+        this.authService.signup(name, last_name, this.usernameSignUp, this.email, this.passwordSignUp).subscribe({
+          next: (res) => {
+            console.log('✅ Registro exitoso:', res);
+            localStorage.setItem('access_token', res.tokens.access);
+            localStorage.setItem('refresh_token', res.tokens.refresh);
+          },
+          error: (err) => {
+            console.error('❌ Error en registro:', err);
+          }
+        });
       },
-      error => {
-        console.error('Error al validar nombre completo:', error);
+      error: (err) => {
+        console.error('❌ Error en validación de nombre:', err);
       }
-    );
+    });
   }
-
 }
