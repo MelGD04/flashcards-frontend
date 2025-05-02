@@ -11,7 +11,14 @@ export class AuthService {
   private apiUrlLogin = 'http://127.0.0.1:8000/api/auth/login/';
   private apiUrlSignUp = 'http://127.0.0.1:8000/api/auth/signup/';
   private fullNameUrl = ''
-  constructor(private http: HttpClient) { }
+  private isBrowser: boolean;
+
+  constructor(
+    private http: HttpClient,
+    @Inject(PLATFORM_ID) platformId: Object
+  ) {
+    this.isBrowser = isPlatformBrowser(platformId);
+  }
 
   login(username: string, password: string): Observable<any> {
     const body = { username, password };
@@ -36,16 +43,20 @@ export class AuthService {
     });
   }
 
+
   isAuthenticated(): boolean {
-    if (typeof window !== 'undefined' && window.localStorage) {
-      const token = localStorage.getItem('token');
-      return !!token;
+    if (!this.isBrowser) {
+      // estamos en SSR o test, localStorage no existe
+      return false;
     }
-    return false;
+    const token = localStorage.getItem('access_token');
+    return !!token;
   }
 
-  
-
-
-
+  logout(): void {
+    if (this.isBrowser) {
+      localStorage.removeItem('access_token');
+      localStorage.removeItem('refresh_token');
+    }
+  }
 }
