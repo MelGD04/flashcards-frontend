@@ -1,7 +1,6 @@
 import { provideClientHydration } from '@angular/platform-browser';
 import { FlashcardsComponent } from './../flashcards/flashcards.component';
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { Flashcard } from '../models/flashcard.model';
 import { FlashcardsService } from '../services/flashcards.service';
 import { ThemeService } from '../services/theme.service';
 import { CommonModule } from '@angular/common';
@@ -16,7 +15,6 @@ import { CommonModule } from '@angular/common';
 })
 export class FavFlashcardsComponent implements OnInit{
   //Esto es de Dani
-  favoriteFlashcards: Flashcard[] = [];
   isLightTheme = true;
 
   constructor(private flashcardServices: FlashcardsService, private themeService: ThemeService){}

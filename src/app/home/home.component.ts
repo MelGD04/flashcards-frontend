@@ -2,7 +2,6 @@ import { ThemeService } from './../services/theme.service';
 import { Component, OnInit } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { FlashcardsService } from '../services/flashcards.service';
-import { Flashcard } from '../models/flashcard.model';
 import { CommonModule } from '@angular/common';
 
 @Component({

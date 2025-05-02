@@ -26,22 +26,24 @@ export class AuthService {
     return this.http.post(this.apiUrlLogin, body);
   }
 
-
   validateName(completeName: string): Observable<any> {
     return this.http.post('http://127.0.0.1:8000/api/auth/validate-name/', {
       complete_name: completeName
     });
   }
 
-  signup(name: string, last_name: string, username: string, email: string, password: string): Observable<any> {
-    return this.http.post(this.apiUrlSignUp, {
-      name,
+  signup(first_name: string, last_name: string, username: string, email: string, password: string): Observable<any> {
+    return this.http.post('http://127.0.0.1:8000/api/auth/signup/', {
+      first_name,
       last_name,
       username,
       email,
       password
     });
   }
+  
+
+  
 
 
   isAuthenticated(): boolean {

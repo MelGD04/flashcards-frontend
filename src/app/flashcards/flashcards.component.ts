@@ -4,7 +4,6 @@ import { ThemeService } from './../services/theme.service';
 import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FlashcardsService } from './../services/flashcards.service';
-import { Flashcard } from '../models/flashcard.model';
 import { CrudCardModalComponent } from "../modals/crud-card-modal/crud-card-modal.component";
 import { FilterModalComponent } from "../modals/filter-modal/filter-modal.component";
 

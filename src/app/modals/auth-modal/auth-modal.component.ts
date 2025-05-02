@@ -64,7 +64,7 @@ export class AuthModalComponent {
         localStorage.setItem('refresh_token', res.tokens.refresh);
 
         this.showToast('Login successfully! Welcome back!', 'Success');
-        window.location.href = '';
+        
       },
       error: (err) => {
         console.error('Error en login', err);
@@ -83,25 +83,30 @@ export class AuthModalComponent {
   errorMessage: string = '';
 
   onSignup() {
+    // Validar el nombre completo
     this.authService.validateName(this.full_name).subscribe({
       next: (res) => {
-        const name = res.name;
-        const last_name = res.last_name;
+        const { name: first_name, last_name } = res; // Extraer first_name y last_name del backend
 
-        this.authService.signup(name, last_name, this.usernameSignUp, this.email, this.passwordSignUp).subscribe({
-          next: (res) => {
-            console.log('✅ Registro exitoso:', res);
-            localStorage.setItem('access_token', res.tokens.access);
-            localStorage.setItem('refresh_token', res.tokens.refresh);
+        // Llamar al endpoint de registro con los datos procesados
+        this.authService.signup(first_name, last_name, this.usernameSignUp, this.email, this.passwordSignUp).subscribe({
+          next: (response) => {
+            console.log('User registered successfully:', response);
+            // Mostrar notificación de éxito
+            this.showToast('Signup successful! Welcome!', 'Success');
           },
-          error: (err) => {
-            console.error('❌ Error en registro:', err);
-          }
+          error: (error) => {
+            console.error('Error during signup:', error);
+            // Mostrar notificación de error
+            this.showToast('Signup failed! Please try again.', 'Error');
+          },
         });
       },
       error: (err) => {
-        console.error('❌ Error en validación de nombre:', err);
-      }
+        console.error('Error during name validation:', err);
+        // Mostrar notificación de error
+        this.showToast('Name validation failed! Please try again.', 'Error');
+      },
     });
   }
 

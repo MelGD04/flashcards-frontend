@@ -51,11 +51,16 @@
   border-color: #007bff;
   box-shadow: 0 0 10px rgba(0, 123, 255, 0.3);
 }
+
+.modal-dark .input-group span {
+  color: white;
+  background:transparent;
+}
+
 .input-group button {
   color: #007bff;
   transition: color 0.3s ease-in-out;
 }
-
 .input-group button:hover {
   color: #0056b3;
 }
@@ -104,4 +109,41 @@
   border-radius: 25px;
   padding: 10px 15px;
   border: 1px solid #ccc;
+}
+.toast {
+  background-color: #ffffff;
+  border-left: 5px solid #0d6efd;
+  border-radius: 0.75rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  animation: slideIn 0.4s ease-out;
+}
+
+.toast-header {
+  background-color: #e9f2ff;
+  border-bottom: none;
+  font-weight: 600;
+  color: #0d6efd;
+  border-top-left-radius: 0.75rem;
+  border-top-right-radius: 0.75rem;
+}
+
+.toast-body {
+  color: #333;
+  font-size: 0.95rem;
+  padding: 0.75rem 1rem;
+}
+
+.btn-close {
+  filter: invert(40%);
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateX(100%);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
 }

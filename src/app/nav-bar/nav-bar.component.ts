@@ -20,7 +20,7 @@ import { AuthModalComponent } from '../modals/auth-modal/auth-modal.component';
   templateUrl: './nav-bar.component.html',
   styleUrl: './nav-bar.component.css'
 })
-export class NavBarComponent {
+export class NavBarComponent implements OnInit {
   isLightTheme = true;
   isLoggedIn: boolean = false;
 

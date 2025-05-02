@@ -1,7 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FlashcardsService } from './../services/flashcards.service';
-import { Flashcard } from '../models/flashcard.model';
 import { ThemeService } from '../services/theme.service';
 
 
