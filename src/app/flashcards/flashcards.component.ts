@@ -33,16 +33,28 @@ export class FlashcardsComponent {
   
   constructor(public flashcardService: FlashcardsService, private themeService: ThemeService, private authService: AuthService) { }
 
-  ngOnInit() {
-    this.flashcardService.getFlashcards().subscribe((data) => {
-      this.flashcards = data;
-    });
+  ngOnInit():void {
+    this.loadFlashcards();
 
     this.themeService.getTheme().subscribe((isLight) => {
       this.isLightTheme = isLight;
     });
 
     this.isLoggedIn = this.authService.isAuthenticated();
+  }
+
+  loadFlashcards():void{
+    this.flashcardService.getFlashcards().subscribe({
+      next: (data) => {
+        this.flashcards = data;
+      },
+      error: (error) => {
+        this.errorMessage = error.error?.error || 'An error occurred while fetching flashcards.';
+        console.error('Error fetching flashcards:', error);
+      },
+    });
+  
+    
   }
 
   nextCard() {

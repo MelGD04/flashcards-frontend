@@ -9,7 +9,7 @@ import { isPlatformBrowser } from '@angular/common';
 })
 export class AuthService { 
   private apiUrlLogin = 'http://127.0.0.1:8000/api/auth/login/';
-  private apiUrlSignUp = 'http://127.0.0.1:8000/api/auth/signup/';
+  private apiUrlDeleteUser = 'http://127.0.0.1:8000/api/auth/delete-user/<str:username>/';
   private fullNameUrl = ''
   private isBrowser: boolean;
 
@@ -42,9 +42,6 @@ export class AuthService {
     });
   }
   
-
-  
-
 
   isAuthenticated(): boolean {
     if (!this.isBrowser) {

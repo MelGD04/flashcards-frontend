@@ -50,20 +50,21 @@
 
         
         @if (!isLoggedIn) {
-          <a href="#" class="btn btn-outline-primary rounded-circle" data-bs-toggle="modal" data-bs-target="#loginModal">
-            <i class="fas fa-user"></i>
+          <a href="#" class="btn p-0 rounded-circle" data-bs-toggle="modal" data-bs-target="#loginModal">
+            <img src="/default-avatar.png" alt="img" style="width:40px; height:40px; border-radius: 50%; border:2px white solid;">
           </a>
         }@else if(isLoggedIn){
           <div class="dropdown2">
-            <a href="#" class="btn btn-outline-primary dropdown2-toggle rounded-circle" id="dropdownMenuButton"
+            <a href="#" class="btn dropdown2-toggle rounded-circle p-0" id="dropdownMenuButton"
             data-bs-toggle="dropdown" aria-expanded="false">
-              <i class="fas fa-user"></i>
+              <img src="/default-avatar.png" alt="img" style="width:40px; height:40px; border-radius: 50%; border:2px white solid;">
             </a>
             <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton">
             
               <li>
-                <a class="dropdown-item"><i class="fas fa-user"></i> My Account</a>
-              </li>
+                <a href="#" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#porfileModal">
+                  <i class="fas fa-user"></i> My Porfile
+                </a></li>
               <li>
                 <hr class="dropdown-divider">
               </li>
@@ -92,4 +93,5 @@
 </div>
 <app-add-card-modal></app-add-card-modal>
 <app-auth-modal></app-auth-modal>
+<app-user-modal></app-user-modal>
 

@@ -1,6 +1,6 @@
 import { Inject, Injectable, PLATFORM_ID } from "@angular/core";
 import { error } from "node:console";
-import { HttpClient } from "@angular/common/http";
+import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { catchError, Observable, of, throwError } from "rxjs";
 import { isPlatformBrowser } from "@angular/common";
 
@@ -16,24 +16,18 @@ export class FlashcardsService {
         @Inject(PLATFORM_ID) private platformId: Object
     ) { }
 
-    getFlashcards(): Observable<any> {
-        if (isPlatformBrowser(this.platformId)) {
-            const token = localStorage.getItem('access_token'); // Solo en navegador
-            const headers = {
-                Authorization: `Bearer ${token}`
-            };
+     getFlashcards(): Observable<any> {
+        let headers = new HttpHeaders();
 
-            return this.http.get(this.apiUrl, { headers }).pipe(
-                catchError(error => {
-                    console.error('Error al obtener flashcards:', error);
-                    return throwError(() => new Error('Error al obtener flashcards'));
-                })
-            );
-        } else {
-            // SSR: devuelve un observable vacío o maneja de otra forma
-            console.warn('Intento de acceder a localStorage en SSR');
-            return of([]); // O lanza un error, según lo que necesites
+        // Verifica si estás en el navegador antes de acceder a localStorage
+        if (isPlatformBrowser(this.platformId)) {
+            const token = localStorage.getItem('access_token');
+            if (token) {
+                headers = headers.set('Authorization', `Bearer ${token}`);
+            }
         }
+
+        return this.http.get(this.apiUrl, { headers });
     }
 
     

@@ -5,6 +5,7 @@ import { CommonModule, DOCUMENT, isPlatformBrowser } from '@angular/common';
 import { ThemeService } from '../services/theme.service';
 import { AddCardModalComponent } from '../modals/add-card-modal/add-card-modal.component'
 import { AuthModalComponent } from '../modals/auth-modal/auth-modal.component';
+import { UserModalComponent } from "../modals/user-modal/user-modal.component";
 
 
 
@@ -15,7 +16,8 @@ import { AuthModalComponent } from '../modals/auth-modal/auth-modal.component';
     RouterOutlet,
     CommonModule,
     AddCardModalComponent,
-    AuthModalComponent
+    AuthModalComponent,
+    UserModalComponent
 ],
   templateUrl: './nav-bar.component.html',
   styleUrl: './nav-bar.component.css'
