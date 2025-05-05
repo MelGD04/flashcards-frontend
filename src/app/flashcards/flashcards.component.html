@@ -1,4 +1,4 @@
-@if(isLoggedIn && flashcards.length>0){
+@if(isLoggedIn && flashcards.length > 0) {
 <main class="container d-flex flex-column justify-content-center align-items-center gap-4 vh-100"
     [ngClass]="{ 'cards-dark': !isLightTheme, 'cards-light': isLightTheme }">
     <!-- Filtros -->
@@ -18,19 +18,18 @@
             <!-- Barra de progreso vertical -->
             <div class="progress position-relative" style="width: 8px; height: 150px; background-color: #444;">
                 <div class="progress-bar-vertical bg-success position-absolute bottom-0" role="progressbar"
-                    [style.height.%]="(revisedCards / flashcards.length) * 100"
-                    aria-valuemin="0"
-                    aria-valuemax="100"></div>
+                    aria-valuemin="0" aria-valuemax="100">
+                </div>
             </div>
 
             <!-- Estadísticas -->
             <div class="text-center small mt-2">
                 <p class="mb-0">
-                    <strong>{{ revisedCards }}</strong> / {{ flashcards.length }} tarjetas
+                    <strong>revisedCards</strong> / {{ flashcards.length }} tarjetas
                 </p>
-                <p class="mb-0 text-success"><i class="fas fa-check-circle"></i> {{ correctAnswers }}</p>
-                <p class="mb-0 text-danger"><i class="fas fa-times-circle"></i> {{ incorrectAnswers }}</p>
-                <p class="mb-0">Precision: {{ getAccuracy() }}%</p>
+                <p class="mb-0 text-success"><i class="fas fa-check-circle"></i> correctAnswers</p>
+                <p class="mb-0 text-danger"><i class="fas fa-times-circle"></i>  incorrectAnswers</p>
+                <p class="mb-0">Precision: /p>
             </div>
         </div>
 
@@ -43,7 +42,6 @@
         <div class="flashcard-container d-flex flex-column align-items-center gap-4">
             <div class="flashcard">
                 <div class="flip-card" (click)="flipCard()">
-                    @if (showCard && currentCard) {
                     <div class="flip-card-inner" [class.flipped]="isFlipped">
                         <!-- Lado de Pregunta -->
                         <div class="flip-card-front">
@@ -64,16 +62,15 @@
 
                             <!-- Botones "Lo sabía / No lo sabía" -->
                             <div class="d-flex justify-content-between px-2">
-                                <button class="btn btn-success rounded-circle" (click)="markAsKnown()" style="margin-right: 10px;">
+                                <button class="btn btn-success rounded-circle" style="margin-right: 10px;">
                                     <i class="fas fa-check-circle"></i>
                                 </button>
-                                <button class="btn btn-danger rounded-circle" (click)="markAsUnknown()" style="margin-left: 10px;">
+                                <button class="btn btn-danger rounded-circle" style="margin-left: 10px;">
                                     <i class="fas fa-times-circle"></i>
                                 </button>
                             </div>
                         </div>
                     </div>
-                    }
                 </div>
             </div>
 
@@ -83,11 +80,9 @@
                     <i class="fas fa-sync-alt"></i> Update Card
                 </button>
                 <button type="button" class="btn btn-outline-secondary border-0 m-0" (click)="toggleFavorite()">
-                    <i [class]="
-              isFavorite ? 'fas fa-star text-warning' : 'far fa-star'
-            "></i>
+                    <i [class]="isFavorite ? 'fas fa-star text-warning' : 'far fa-star'"></i>
                 </button>
-                <button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteCardModal"> 
+                <button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteCardModal">
                     <i class="fas fa-trash"></i> Delete Card
                 </button>
             </div>
@@ -97,29 +92,27 @@
         <button class="btn nav-btn" (click)="nextCard()">
             <i class="fas fa-arrow-right"></i>
         </button>
-
-        
-        <div class="d-flex flex-column justify-content-start align-items-center gap-2 p-3 rounded shadow-sm"
-            style="min-width: 160px; background-color: rgba(255,255,255,0.05); height: 100%;">
-            
-        
-        </div>
     </div>
 </main>
+}
 
-}
-@else if(isLoggedIn && flashcards.length===0){
-    <div class="d-flex flex-column justify-content-center align-items-center vh-100" [ngClass]="{ 'cards-dark': !isLightTheme, 'cards-light': isLightTheme }">
-        <div class="no-cards-message text-center mt-4 ">
-            <i class="fas fa-exclamation-circle fa-3x text-warning"></i>
-            <h3 class="mt-2">No flashcards available</h3>
-            <p>Start by adding your first flashcard!</p>
-            <button class="btn btn-outline-primary rounded-pill" data-bs-toggle="modal" data-bs-target="#addFlashcardModal">Add Flashcard</button>
-        </div>
+<!-- Si no hay tarjetas -->
+@else if(isLoggedIn && flashcards.length === 0) {
+<div class="d-flex flex-column justify-content-center align-items-center vh-100"
+    [ngClass]="{ 'cards-dark': !isLightTheme, 'cards-light': isLightTheme }">
+    <div class="no-cards-message text-center mt-4">
+        <i class="fas fa-exclamation-circle fa-3x text-warning"></i>
+        <h3 class="mt-2">No flashcards available</h3>
+        <p>Start by adding your first flashcard!</p>
+        <button class="btn btn-outline-primary rounded-pill" data-bs-toggle="modal" data-bs-target="#addFlashcardModal">
+            Add Flashcard
+        </button>
     </div>
+</div>
 }
-@else {
+
 <!-- Si no está logueado -->
+@else {
 <div class="d-flex flex-column justify-content-center align-items-center vh-100"
     [ngClass]="{ 'cards-dark': !isLightTheme, 'cards-light': isLightTheme }">
     <div class="no-login text-center mt-4">

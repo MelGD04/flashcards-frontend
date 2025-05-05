@@ -14,16 +14,31 @@ import { CommonModule } from '@angular/common';
   styleUrl: './fav-flashcards.component.css'
 })
 export class FavFlashcardsComponent implements OnInit{
-  //Esto es de Dani
+  favoriteCards: any[] = []; // Lista de tarjetas favoritas
   isLightTheme = true;
 
-  constructor(private flashcardServices: FlashcardsService, private themeService: ThemeService){}
+  constructor(private flashcardService: FlashcardsService, private themeService: ThemeService){}
 
   ngOnInit(): void {
+    this.loadFavoriteCards();
+
     this.themeService.getTheme().subscribe((isLight) => {
       this.isLightTheme = isLight;
     });
   }
+
+  loadFavoriteCards(): void {
+    this.flashcardService.getFavoriteCards().subscribe(
+      (data) => {
+        console.log('Favorite cards:', data);
+        this.favoriteCards = data;
+      },
+      (error) => {
+        console.error('Error fetching favorite cards:', error);
+      }
+    );
+  }
+
   toggleTheme() {
     this.themeService.toggleTheme();
   }
