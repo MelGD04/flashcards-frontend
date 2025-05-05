@@ -34,7 +34,15 @@ export class FlashcardsComponent {
   constructor(public flashcardService: FlashcardsService, private themeService: ThemeService, private authService: AuthService) { }
 
   ngOnInit():void {
-    this.loadFlashcards();
+    this.flashcardService.getFlashcards().subscribe(
+      (data) => {
+        console.log('Flashcards:', data); // Verifica los datos devueltos por el backend
+        this.flashcards = data;
+      },
+      (error) => {
+        console.error('Error fetching flashcards:', error);
+      }
+    );
 
     this.themeService.getTheme().subscribe((isLight) => {
       this.isLightTheme = isLight;
@@ -43,19 +51,6 @@ export class FlashcardsComponent {
     this.isLoggedIn = this.authService.isAuthenticated();
   }
 
-  loadFlashcards():void{
-    this.flashcardService.getFlashcards().subscribe({
-      next: (data) => {
-        this.flashcards = data;
-      },
-      error: (error) => {
-        this.errorMessage = error.error?.error || 'An error occurred while fetching flashcards.';
-        console.error('Error fetching flashcards:', error);
-      },
-    });
-  
-    
-  }
 
   nextCard() {
     this.animation = 'slide-out-left';

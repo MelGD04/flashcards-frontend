@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { ThemeService } from '../../services/theme.service';
 import { CommonModule } from '@angular/common';
+import { FlashcardsService } from '../../services/flashcards.service';
 
 @Component({
   selector: 'app-crud-card-modal',
@@ -9,10 +10,11 @@ import { CommonModule } from '@angular/common';
   styleUrl: './crud-card-modal.component.css'
 })
 export class CrudCardModalComponent {
-
+  flashcards: any[] = []; // Lista de tarjetas
+  newFlashcard = { question: '', answer: '', difficulty: 'easy', category: '' }; // Datos para crear una nueva tarjeta
   isLightTheme = true;
 
-  constructor(private themeService: ThemeService) {
+  constructor(private themeService: ThemeService, private flashcardsService: FlashcardsService) {
 
   }
 
@@ -26,5 +28,7 @@ export class CrudCardModalComponent {
   toggleTheme() {
     this.themeService.toggleTheme();
   }
+
+ 
 
 }

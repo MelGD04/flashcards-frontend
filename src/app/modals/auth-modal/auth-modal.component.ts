@@ -18,7 +18,7 @@ export class AuthModalComponent {
   @ViewChild('loginToast', { static: true }) loginToastEl!: ElementRef;
   showPassword: boolean = false;
   isLightTheme = true;
-  
+
 
   constructor(private themeService: ThemeService, private authService: AuthService) { }
 
@@ -35,7 +35,7 @@ export class AuthModalComponent {
     // Mostrar el toast
     toast.show();
   }
-  
+
   ngOnInit() {
     // Escucha los cambios en el tema
     this.themeService.getTheme().subscribe((isLight) => {
@@ -64,7 +64,7 @@ export class AuthModalComponent {
         localStorage.setItem('refresh_token', res.tokens.refresh);
 
         this.showToast('Login successfully! Welcome back!', 'Success');
-        
+
       },
       error: (err) => {
         console.error('Error en login', err);
@@ -112,6 +112,19 @@ export class AuthModalComponent {
 
   onLogout(): void {
     this.authService.logout();
-    window.location.href = '';
+  }
+
+  deleteAccount(): void {
+    this.authService.deleteAuthenticatedUser().subscribe(
+      (response) => {
+        console.log('User deleted successfully:', response);
+        this.showToast('Your account has been deleted successfully.', 'Success'); // Notificación de éxito
+        this.authService.logout(); // Limpia el token del localStorage
+      },
+      (error) => {
+        console.error('Error deleting user:', error);
+        this.showToast('An error occurred while deleting your account. Please try again.', 'Error'); // Notificación de error
+      }
+    );
   }
 }

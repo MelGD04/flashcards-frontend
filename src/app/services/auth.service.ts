@@ -7,7 +7,7 @@ import { isPlatformBrowser } from '@angular/common';
 @Injectable({
   providedIn: 'root'
 })
-export class AuthService { 
+export class AuthService {
   private apiUrlLogin = 'http://127.0.0.1:8000/api/auth/login/';
   private apiUrlDeleteUser = 'http://127.0.0.1:8000/api/auth/delete-user/<str:username>/';
   private fullNameUrl = ''
@@ -41,7 +41,7 @@ export class AuthService {
       password
     });
   }
-  
+
 
   isAuthenticated(): boolean {
     if (!this.isBrowser) {
@@ -57,5 +57,29 @@ export class AuthService {
       localStorage.removeItem('access_token');
       localStorage.removeItem('refresh_token');
     }
+  }
+
+  deleteAuthenticatedUser(): Observable<any> {
+    const url = `http://127.0.0.1:8000/api/auth/delete-user/`; // Endpoint para eliminar al usuario autenticado
+    let headers = new HttpHeaders();
+
+    const token = this.getToken();
+    if (token) {
+      headers = headers.set('Authorization', `Bearer ${token}`);
+    }
+
+    return this.http.delete(url, { headers }).pipe(
+      catchError((error) => {
+        console.error('Error deleting user:', error);
+        return throwError(() => error);
+      })
+    );
+  }
+
+  private getToken(): string | null {
+    if (this.isBrowser) {
+      return localStorage.getItem('access_token');
+    }
+    return null;
   }
 }

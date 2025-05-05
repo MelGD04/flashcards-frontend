@@ -8,7 +8,8 @@ import { isPlatformBrowser } from "@angular/common";
     providedIn: 'root'
 })
 export class FlashcardsService {
-    private apiUrl = 'http://127.0.0.1:8000/api/cards/flashcards/';
+    private apiUrl = 'http://127.0.0.1:8000/api/auth/flashcards/';
+    private apiUrlCreate = 'http://127.0.1:8000/api/auth/create-card/';
 
 
     constructor(
@@ -16,7 +17,28 @@ export class FlashcardsService {
         @Inject(PLATFORM_ID) private platformId: Object
     ) { }
 
-     getFlashcards(): Observable<any> {
+    getFlashcards(): Observable<any> {
+        const headers = this.getAuthHeaders();
+        return this.http.get(this.apiUrl, { headers }).pipe(
+            catchError((error) => {
+                console.error('Error fetching flashcards:', error);
+                return throwError(() => error);
+            })
+        );
+    }
+
+    createFlashcard(data: any): Observable<any> {
+        const headers = this.getAuthHeaders();
+        return this.http.post(this.apiUrlCreate, data, { headers }).pipe(
+            catchError((error) => {
+                console.error('Error creating flashcard:', error);
+                return throwError(() => error);
+            })
+        );
+    }
+
+    // Obtener encabezados de autenticación
+    private getAuthHeaders(): HttpHeaders {
         let headers = new HttpHeaders();
 
         // Verifica si estás en el navegador antes de acceder a localStorage
@@ -27,10 +49,8 @@ export class FlashcardsService {
             }
         }
 
-        return this.http.get(this.apiUrl, { headers });
+        return headers;
     }
-
-    
     /*
         async function obtenerDatos() {
             const response = await fetch ('localhost:8000/flashcards/', {
