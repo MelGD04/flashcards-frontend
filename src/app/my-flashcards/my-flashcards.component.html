@@ -1,4 +1,4 @@
-<!--
+
 <div class="content d-flex flex-column justify-content-start align-items-center min-vh-100 w-100 gap-4 position-relative pt-5"
   [ngClass]="{ 'cards-dark': !isLightTheme, 'cards-light': isLightTheme }">
         @if (!selectedCategory) { 
@@ -11,12 +11,12 @@
                     <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4 justify-content-center">
                         @for (category of categories; track category) {
                         <div class="col d-flex justify-content-center">
-                            <div class="card shadow-sm" (click)="selectCategory(category)">
+                            <div class="card shadow-sm" >
                                 <div class="card-body text-center">
-                                    <h5 class="card-title mb-0">{{ category }}</h5>
+                                    <h5 class="card-title mb-0">{{ category.category_name }}</h5>
                                 </div>
                                 <div class="card-footer">
-                                    Total: {{ flashcardsByCategory[category].length }} flashcards
+                                    Total: <!--{{ flashcardsByCategory[category].length }} -->flashcards
                                 </div>
                             </div>
                         </div>
@@ -26,7 +26,7 @@
                 
             
         }
-        
+    <!--   
     @if (selectedCategory) {
         <div class="d-flex flex-column justify-content-start align-items-center min-vh-100 w-100 gap-4 position-relative">
         
@@ -56,5 +56,5 @@
         </div>
 
     }
+        -->
 </div>
--->

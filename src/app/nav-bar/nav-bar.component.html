@@ -1,97 +1,92 @@
+<div class="main-content">
 
-<div class="main-content" >
+  <nav class="navbar navbar-expand-lg navbar-custom fixed-top"
+    [ngClass]="{ 'navbar-dark': !isLightTheme, 'navbar-light': isLightTheme }">
+    <div class="container-fluid">
 
-   <nav class="navbar navbar-expand navbar-custom fixed-top" [ngClass]="{ 'navbar-dark': !isLightTheme, 'navbar-light': isLightTheme }"
-  >
-  <div class="container-fluid">
+      <a class="navbar-brand fw-bold" routerLink="">
+        <i class="fas fa-home me-2"></i>Home
+      </a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+        aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
 
-    <a class="navbar-brand fw-bold" routerLink="">
-      <i class="fas fa-home me-2"></i>Home
-    </a>
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
-      aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
 
-    <div class="collapse navbar-collapse" id="navbarNav">
-      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-      
-        <div class="dropdown">
-          <button class="btn btn-outline-primary dropdown-toggle rounded-pill" type="button" id="dropdownMenuButton"
-            data-bs-toggle="dropdown" aria-expanded="false">
-            Add Flashcards
-          </button>
-          <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-      
-            <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#addFlashcardModal"><i class="fas fa-plus"></i> Add
-                Flashcard</a></li>
-            <li>
-              <hr class="dropdown-divider">
-            </li>
-            <li><a class="dropdown-item" routerLink="fav-flashcards"><i class="fas fa-star"></i> Favorite</a></li>
-            <li><a class="dropdown-item" routerLink="my-flashcards"><i class="fas fa-book"></i>  My Flashcards</a></li>
-      
-          </ul>
-        </div>
-      
-      </ul>
-      
-      <div class="d-flex gap-3">
-        @if (isLightTheme) {
+          <div class="dropdown">
+            <button class="btn btn-outline-primary dropdown-toggle rounded-pill" type="button" id="dropdownMenuButton"
+              data-bs-toggle="dropdown" aria-expanded="false">
+              Add Flashcards
+            </button>
+            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+
+              <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#addFlashcardModal"><i
+                    class="fas fa-plus"></i> Add
+                  Flashcard</a></li>
+              <li>
+                <hr class="dropdown-divider">
+              </li>
+              <li><a class="dropdown-item" routerLink="fav-flashcards"><i class="fas fa-star"></i> Favorite</a></li>
+              <li><a class="dropdown-item" routerLink="my-flashcards"><i class="fas fa-book"></i> My Flashcards</a></li>
+
+            </ul>
+          </div>
+
+        </ul>
+
+        <div class="d-flex gap-3">
+          <!-- Botón para alternar el tema -->
           <button class="btn btn-theme-toggle" (click)="toggleTheme()">
-            <i class="fas fa-moon"></i> Dark Theme
+            <i [class]="isLightTheme ? 'fas fa-moon' : 'fas fa-sun'"></i>
+            {{ isLightTheme ? 'Dark Theme' : 'Light Theme' }}
           </button>
-        }@else {
-          <button class="btn btn-theme-toggle" (click)="toggleTheme()">
-            <i class="fas fa-sun"></i> Light Theme
-          </button>
-        }
-        
 
-        
-        @if (!isLoggedIn) {
+          <!-- Verificación de autenticación -->
+          @if (!isLoggedIn) {
           <a href="#" class="btn p-0 rounded-circle" data-bs-toggle="modal" data-bs-target="#loginModal">
             <img src="/default-avatar.png" alt="img" style="width:40px; height:40px; border-radius: 50%; border:2px white solid;">
           </a>
-        }@else if(isLoggedIn){
+          }@else if(isLoggedIn){
           <div class="dropdown2">
-            <a href="#" class="btn dropdown2-toggle rounded-circle p-0" id="dropdownMenuButton"
-            data-bs-toggle="dropdown" aria-expanded="false">
-              <img src="/default-avatar.png" alt="img" style="width:40px; height:40px; border-radius: 50%; border:2px white solid;">
+            <a href="#" class="btn dropdown2-toggle rounded-circle p-0" id="dropdownMenuButton" data-bs-toggle="dropdown"
+              aria-expanded="false">
+              <img src="/default-avatar.png" alt="img"
+                style="width:40px; height:40px; border-radius: 50%; border:2px white solid;">
             </a>
             <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton">
-            
+          
               <li>
                 <a href="#" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#porfileModal">
                   <i class="fas fa-user"></i> My Porfile
-                </a></li>
+                </a>
+              </li>
               <li>
                 <hr class="dropdown-divider">
               </li>
               <li><a href="#" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#signOutModal">
-                <i class="fas fa-sign-out-alt"></i> Sign Out
-              </a></li>
-              
-              <li><a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#deleteAccountModal"><i class="fas fa-trash"></i> Delete Account</a></li>
+                  <i class="fas fa-sign-out-alt"></i> Sign Out
+                </a></li>
+          
+              <li><a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#deleteAccountModal"><i
+                    class="fas fa-trash"></i> Delete Account</a></li>
             </ul>
           </div>
           
-        }   
-         
+          }
+
+        </div>
+
       </div>
 
     </div>
+  </nav>
 
+  <div class="content">
+    <router-outlet></router-outlet>
   </div>
-</nav>
- 
-
-<div class="content">
-  <router-outlet></router-outlet>
-  
+  <app-add-card-modal></app-add-card-modal>
+  <app-auth-modal></app-auth-modal>
+  <app-user-modal></app-user-modal>
 </div>
-</div>
-<app-add-card-modal></app-add-card-modal>
-<app-auth-modal></app-auth-modal>
-<app-user-modal></app-user-modal>
-

@@ -193,3 +193,58 @@
 }
 
 
+@media (max-width: 576px) {
+  /* Oculta ambos bloques de progreso/estadísticas en pantallas pequeñas */
+  main.container .d-flex.justify-content-around > div[style*="min-width: 160px"] {
+    display: none !important;
+  }
+}
+
+
+@media (max-width: 576px) {
+  /* Fija la barra CRUD al fondo */
+  .card-crud {
+    position: fixed !important;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    display: flex !important;
+    justify-content: space-around !important;
+    background: rgba(25, 25, 25, 0.5);
+    backdrop-filter: blur(10px);
+    padding: 0.5rem 0 !important;
+    box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.2);
+    z-index: 1000;
+    margin: 0 !important;
+  }
+
+  /* Evita que el contenido quede oculto bajo la nav bar */
+  main.container {
+    padding-bottom: 4rem !important;
+  }
+}
+
+
+
+
+/* 1) Centrar todo el grupo nav-btn + flashcard */
+main.container > .d-flex.justify-content-around {
+  justify-content: center !important;
+  column-gap: 0.5rem !important;   /* separación uniforme */
+}
+
+/* 2) Forzar ancho auto y sin estirarse */
+main.container > .d-flex.justify-content-around > button.nav-btn,
+main.container > .d-flex.justify-content-around > .flashcard-container {
+  flex: 0 0 auto !important;
+}
+
+/* 3) Márgenes homogéneos para los nav-btn */
+main.container > .d-flex.justify-content-around > button.nav-btn {
+  margin: 0.5rem !important;
+}
+
+/* 4) Un poco más de margen lateral para la flashcard */
+main.container > .d-flex.justify-content-around > .flashcard-container {
+  margin: 0.5rem 0.75rem !important;
+}

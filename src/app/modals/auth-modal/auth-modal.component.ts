@@ -5,6 +5,7 @@ import { ThemeService } from '../../services/theme.service';
 import { AuthService } from '../../services/auth.service';
 import { Router } from '@angular/router';
 declare var bootstrap: any;
+
 @Component({
   selector: 'app-auth-modal',
   imports: [
@@ -18,30 +19,27 @@ export class AuthModalComponent {
   @ViewChild('loginToast', { static: true }) loginToastEl!: ElementRef;
   showPassword: boolean = false;
   isLightTheme = true;
+  isLoading: boolean = false;
 
+  // Login
+  usernameLogin: string = '';
+  passwordLogin: string = '';
+
+  // Signup
+  full_name: string = '';
+  usernameSignUp: string = '';
+  email: string = '';
+  passwordSignUp: string = '';
+  errorMessage: string = '';
 
   constructor(private themeService: ThemeService, private authService: AuthService) { }
 
-  showToast(message: string, title: string = 'Notification') {
-    const toastElement = this.loginToastEl.nativeElement;
-    const toast = new bootstrap.Toast(toastElement);
-
-    // Actualizar el contenido del toast
-    const toastTitle = toastElement.querySelector('#toastTitle');
-    const toastMessage = toastElement.querySelector('#toastMessage');
-    if (toastTitle) toastTitle.textContent = title;
-    if (toastMessage) toastMessage.textContent = message;
-
-    // Mostrar el toast
-    toast.show();
-  }
-
   ngOnInit() {
-    // Escucha los cambios en el tema
     this.themeService.getTheme().subscribe((isLight) => {
       this.isLightTheme = isLight;
     });
   }
+
   toggleTheme() {
     this.themeService.toggleTheme();
   }
@@ -50,81 +48,101 @@ export class AuthModalComponent {
     this.showPassword = !this.showPassword;
   }
 
-  // Para el login
-  usernameLogin: string = '';
-  passwordLogin: string = '';
+  showToast(message: string, title: string = 'Notification') {
+    const toastElement = this.loginToastEl.nativeElement;
+    const toast = new bootstrap.Toast(toastElement);
 
+    const toastTitle = toastElement.querySelector('#toastTitle');
+    const toastMessage = toastElement.querySelector('#toastMessage');
+    if (toastTitle) toastTitle.textContent = title;
+    if (toastMessage) toastMessage.textContent = message;
 
+    toast.show();
+  }
+
+  private handleError(error: any, defaultMessage: string): void {
+    console.error(defaultMessage, error);
+    const message = error?.error?.message || defaultMessage;
+    this.showToast(message, 'Error');
+  }
+
+  private validateSignupData(): boolean {
+    if (!this.full_name || !this.usernameSignUp || !this.email || !this.passwordSignUp) {
+      this.showToast('All fields are required for signup.', 'Error');
+      return false;
+    }
+    return true;
+  }
 
   onLogin() {
+    this.isLoading = true;
     this.authService.login(this.usernameLogin, this.passwordLogin).subscribe({
       next: (res) => {
         console.log('Login exitoso:', res);
         localStorage.setItem('access_token', res.tokens.access);
         localStorage.setItem('refresh_token', res.tokens.refresh);
-
         this.showToast('Login successfully! Welcome back!', 'Success');
-
+        location.href = ''; 
       },
       error: (err) => {
-        console.error('Error en login', err);
-        this.showToast('Login failed! Please try again.', 'Error');
+        this.handleError(err, 'Login failed! Please try again.');
+      },
+      complete: () => {
+        this.isLoading = false;
       }
     });
   }
 
-
-
-  // Para el signup
-  full_name: string = '';
-  usernameSignUp: string = '';
-  email: string = '';
-  passwordSignUp: string = '';
-  errorMessage: string = '';
-
   onSignup() {
-    // Validar el nombre completo
+    if (!this.validateSignupData()) return;
+
+    this.isLoading = true;
     this.authService.validateName(this.full_name).subscribe({
       next: (res) => {
-        const { name: first_name, last_name } = res; // Extraer first_name y last_name del backend
+        const { name: first_name, last_name } = res;
 
-        // Llamar al endpoint de registro con los datos procesados
         this.authService.signup(first_name, last_name, this.usernameSignUp, this.email, this.passwordSignUp).subscribe({
           next: (response) => {
             console.log('User registered successfully:', response);
-            // Mostrar notificación de éxito
             this.showToast('Signup successful! Welcome!', 'Success');
+            location.href = '';
           },
           error: (error) => {
-            console.error('Error during signup:', error);
-            // Mostrar notificación de error
-            this.showToast('Signup failed! Please try again.', 'Error');
+            this.handleError(error, 'Signup failed! Please try again.');
           },
+          complete: () => {
+            this.isLoading = false;
+          }
         });
       },
       error: (err) => {
-        console.error('Error during name validation:', err);
-        // Mostrar notificación de error
-        this.showToast('Name validation failed! Please try again.', 'Error');
-      },
+        this.handleError(err, 'Name validation failed! Please try again.');
+        this.isLoading = false;
+      }
     });
   }
 
   onLogout(): void {
     this.authService.logout();
+    this.showToast('You have been logged out.', 'Success');
+    location.href = '';
   }
 
   deleteAccount(): void {
-    this.authService.deleteAuthenticatedUser().subscribe(
-      (response) => {
+    this.isLoading = true;
+    this.authService.deleteAuthenticatedUser().subscribe({
+      next: (response) => {
         console.log('User deleted successfully:', response);
-        this.showToast('Your account has been deleted successfully.', 'Success'); // Notificación de éxito
-        this.authService.logout(); // Limpia el token del localStorage
+        this.showToast('Your account has been deleted successfully.', 'Success');
+        this.authService.logout();
+        location.href = '';
       },
-      (error) => {
-        console.error('Error deleting user:', error);
-        this.showToast('An error occurred while deleting your account. Please try again.', 'Error'); // Notificación de error
+      error: (error) => {
+        this.handleError(error, 'An error occurred while deleting your account. Please try again.');
+      },
+      complete: () => {
+        this.isLoading = false;
       }
-    );
+    });
   }
 }

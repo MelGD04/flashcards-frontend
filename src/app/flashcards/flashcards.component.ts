@@ -1,7 +1,6 @@
 import { AuthService } from './../services/auth.service';
 import { ThemeService } from './../services/theme.service';
-
-import { Component, Input } from '@angular/core';
+import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FlashcardsService } from './../services/flashcards.service';
 import { CrudCardModalComponent } from "../modals/crud-card-modal/crud-card-modal.component";
@@ -26,39 +25,69 @@ export class FlashcardsComponent {
   isFavorite: boolean = false;
   isLoggedIn: boolean = false;
   currentCard: any = null;
+  showStatsSidebar = false;
+  isLoading: boolean = false;
 
-  constructor(public flashcardsService: FlashcardsService, private themeService: ThemeService, private authService: AuthService) { }
+  constructor(
+    public flashcardsService: FlashcardsService,
+    private themeService: ThemeService,
+    private authService: AuthService
+  ) { }
 
   ngOnInit(): void {
+    this.isLoggedIn = this.authService.isAuthenticated();
     this.loadFlashcards();
 
     this.themeService.getTheme().subscribe((isLight) => {
       this.isLightTheme = isLight;
     });
-
-    this.isLoggedIn = this.authService.isAuthenticated();
   }
 
-  // Cargar todas las tarjetas
   loadFlashcards(): void {
+    if (!this.isLoggedIn) {
+      console.warn('User is not authenticated. Skipping request.');
+      return;
+    }
+
+    this.isLoading = true;
     this.flashcardsService.getFlashcards().subscribe(
       (data) => {
         this.flashcards = data;
         if (this.flashcards.length > 0) {
           this.currentCard = this.flashcards[0];
-          console.log('Current card loaded with ID:', this.currentCard.card_id);
-          this.checkIfFavorite(this.currentCard.card_id); // Verifica si la tarjeta actual es favorita
+          this.checkIfFavorite(this.currentCard.card_id);
         } else {
           console.warn('No flashcards available.');
         }
       },
       (error) => {
-        console.error('Error fetching flashcards:', error);
+        this.handleError(error, 'Error fetching flashcards.');
+      },
+      () => {
+        this.isLoading = false;
       }
     );
   }
 
-  // Verificar si la tarjeta actual es favorita
+  private navigateToCard(index: number): void {
+    if (index >= 0 && index < this.flashcards.length) {
+      this.currentCard = this.flashcards[index];
+      this.checkIfFavorite(this.currentCard.card_id);
+    } else {
+      console.warn('Invalid card index:', index);
+    }
+  }
+
+  previousCard(): void {
+    const currentIndex = this.flashcards.indexOf(this.currentCard);
+    this.navigateToCard(currentIndex - 1);
+  }
+
+  nextCard(): void {
+    const currentIndex = this.flashcards.indexOf(this.currentCard);
+    this.navigateToCard(currentIndex + 1);
+  }
+
   checkIfFavorite(cardId: number): void {
     if (!cardId) {
       console.error('Card ID is undefined.');
@@ -67,77 +96,41 @@ export class FlashcardsComponent {
 
     this.flashcardsService.getFavoriteCards().subscribe(
       (favorites) => {
-        this.isFavorite = favorites.some((card: any) => card.card_id === cardId); // Verifica si la tarjeta está en favoritos
+        this.isFavorite = favorites.some((card: any) => card.card_id === cardId);
       },
       (error) => {
-        console.error('Error checking favorite status:', error);
+        this.handleError(error, 'Error checking favorite status.');
       }
     );
   }
 
-  // Alternar estado de favorito
   toggleFavorite(): void {
     if (!this.currentCard || !this.currentCard.card_id) {
       console.error('Current card or card ID is undefined.');
       return;
     }
 
-    if (this.isFavorite) {
-      // Eliminar de favoritos
-      this.flashcardsService.removeFavorite(this.currentCard.card_id).subscribe(
-        (response) => {
-          console.log('Card removed from favorites:', response);
-          this.isFavorite = false; // Cambiar el estado a no favorito
-        },
-        (error) => {
-          console.error('Error removing card from favorites:', error);
-        }
-      );
-    } else {
-      // Agregar a favoritos
-      this.flashcardsService.addFavorite(this.currentCard.card_id).subscribe(
-        (response) => {
-          console.log('Card added to favorites:', response);
-          this.isFavorite = true; // Cambiar el estado a favorito
-        },
-        (error) => {
-          console.error('Error adding card to favorites:', error);
-        }
-      );
-    }
-  }
+    const action = this.isFavorite
+      ? this.flashcardsService.removeFavorite(this.currentCard.card_id)
+      : this.flashcardsService.addFavorite(this.currentCard.card_id);
 
-  // Navegar a la tarjeta anterior
-  previousCard(): void {
-    const currentIndex = this.flashcards.indexOf(this.currentCard);
-    if (currentIndex > 0) {
-      this.currentCard = this.flashcards[currentIndex - 1];
-      console.log('Navigated to previous card with ID:', this.currentCard.id); // Mostrar el ID de la tarjeta
-      if (this.currentCard && this.currentCard.card_id) {
-        this.checkIfFavorite(this.currentCard.card_id); // Verifica si la nueva tarjeta es favorita
-      } else {
-        console.error('Previous card or card ID is undefined.');
+    action.subscribe(
+      (response) => {
+        this.isFavorite = !this.isFavorite;
+      },
+      (error) => {
+        this.handleError(error, 'Error toggling favorite status.');
       }
-    }
+    );
   }
 
-  // Navegar a la tarjeta siguiente
-  nextCard(): void {
-    const currentIndex = this.flashcards.indexOf(this.currentCard);
-    if (currentIndex < this.flashcards.length - 1) {
-      this.currentCard = this.flashcards[currentIndex + 1];
-      console.log('Navigated to next card with ID:', this.currentCard.id); // Mostrar el ID de la tarjeta
-      if (this.currentCard && this.currentCard.card_id) {
-        this.checkIfFavorite(this.currentCard.card_id); // Verifica si la nueva tarjeta es favorita
-      } else {
-        console.error('Next card or card ID is undefined.');
-      }
-    }
-  }
-
-  // Voltear la tarjeta
   flipCard(): void {
     this.isFlipped = !this.isFlipped;
+  }
+
+  private handleError(error: any, defaultMessage: string): void {
+    console.error(defaultMessage, error);
+    this.errorMessage = error?.error?.message || defaultMessage;
   }
 }
 

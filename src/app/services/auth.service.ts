@@ -9,8 +9,7 @@ import { isPlatformBrowser } from '@angular/common';
 })
 export class AuthService {
   private apiUrlLogin = 'http://127.0.0.1:8000/api/auth/login/';
-  private apiUrlDeleteUser = 'http://127.0.0.1:8000/api/auth/delete-user/<str:username>/';
-  private fullNameUrl = ''
+  private apiUrl = 'http://127.0.0.1:8000/api/auth/';
   private isBrowser: boolean;
 
   constructor(
@@ -81,5 +80,14 @@ export class AuthService {
       return localStorage.getItem('access_token');
     }
     return null;
+  }
+
+  getCurrentUser(): Observable<any> {
+    const token = localStorage.getItem('access_token'); // Obtén el token del almacenamiento local
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${token}`
+    });
+
+    return this.http.get(`${this.apiUrl}current-user/`, { headers });
   }
 }
