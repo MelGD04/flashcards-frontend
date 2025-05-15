@@ -82,7 +82,7 @@ export class AuthModalComponent {
         localStorage.setItem('access_token', res.tokens.access);
         localStorage.setItem('refresh_token', res.tokens.refresh);
         this.showToast('Login successfully! Welcome back!', 'Success');
-        location.href = ''; 
+ 
       },
       error: (err) => {
         this.handleError(err, 'Login failed! Please try again.');
@@ -105,7 +105,7 @@ export class AuthModalComponent {
           next: (response) => {
             console.log('User registered successfully:', response);
             this.showToast('Signup successful! Welcome!', 'Success');
-            location.href = '';
+            
           },
           error: (error) => {
             this.handleError(error, 'Signup failed! Please try again.');
@@ -125,7 +125,7 @@ export class AuthModalComponent {
   onLogout(): void {
     this.authService.logout();
     this.showToast('You have been logged out.', 'Success');
-    location.href = '';
+    
   }
 
   deleteAccount(): void {
@@ -135,7 +135,7 @@ export class AuthModalComponent {
         console.log('User deleted successfully:', response);
         this.showToast('Your account has been deleted successfully.', 'Success');
         this.authService.logout();
-        location.href = '';
+        
       },
       error: (error) => {
         this.handleError(error, 'An error occurred while deleting your account. Please try again.');

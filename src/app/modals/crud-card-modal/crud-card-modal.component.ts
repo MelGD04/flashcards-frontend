@@ -1,34 +1,46 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ThemeService } from '../../services/theme.service';
 import { CommonModule } from '@angular/common';
 import { FlashcardsService } from '../../services/flashcards.service';
+import { CategoryService } from '../../services/category.service';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-crud-card-modal',
-  imports: [CommonModule],
+  imports: [
+    CommonModule,
+    FormsModule
+  ],
   templateUrl: './crud-card-modal.component.html',
-  styleUrl: './crud-card-modal.component.css'
+  styleUrls: ['./crud-card-modal.component.css']
 })
-export class CrudCardModalComponent {
+export class CrudCardModalComponent implements OnInit {
   flashcards: any[] = []; // Lista de tarjetas
+  categories: any[] = []; // Lista de categorías
   currentFlashcard: any = null; // Tarjeta actualmente seleccionada
-  isLightTheme = true;
+  newCategoryName: string = ''; // Nombre de la nueva categoría
+  isLightTheme = true; // Tema actual
   isLoading = false; // Estado de carga
   errorMessage: string | null = null; // Mensaje de error
 
-  constructor(private themeService: ThemeService, private flashcardsService: FlashcardsService) { }
+  constructor(
+    private themeService: ThemeService,
+    private flashcardsService: FlashcardsService,
+    private categoryService: CategoryService // Servicio para manejar categorías
+  ) { }
 
-  ngOnInit() {
+  ngOnInit(): void {
     // Escucha los cambios en el tema
     this.themeService.getTheme().subscribe((isLight) => {
       this.isLightTheme = isLight;
     });
 
-    // Cargar las tarjetas al iniciar
+    // Cargar las tarjetas y categorías al iniciar
     this.loadFlashcards();
+    this.loadCategories();
   }
 
-  toggleTheme() {
+  toggleTheme(): void {
     this.themeService.toggleTheme();
   }
 
@@ -52,27 +64,87 @@ export class CrudCardModalComponent {
     );
   }
 
-  // Eliminar la tarjeta actualmente seleccionada
-  deleteCurrentCard(): void {
+  // Cargar todas las categorías
+  loadCategories(): void {
+    this.categoryService.getCategories().subscribe(
+      (data) => {
+        this.categories = data;
+        console.log('Categories loaded:', this.categories);
+      },
+      (error) => {
+        console.error('Error fetching categories:', error);
+        this.errorMessage = 'Failed to load categories.';
+      }
+    );
+  }
+
+  // Agregar una nueva categoría
+  addCategory(): void {
+    if (!this.newCategoryName.trim()) {
+      this.errorMessage = 'Category name cannot be empty.';
+      return;
+    }
+
+    this.categoryService.createCategory(this.newCategoryName).subscribe(
+      (response) => {
+        console.log('Category added successfully:', response);
+        this.categories.push(response); // Agregar la nueva categoría a la lista
+        this.newCategoryName = ''; // Limpiar el campo de entrada
+        this.currentFlashcard.category = response.name; // Asignar la nueva categoría a la tarjeta actual
+      },
+      (error) => {
+        console.error('Error adding category:', error);
+        this.errorMessage = 'Failed to add category.';
+      }
+    );
+  }
+
+  // Actualizar una tarjeta
+  updateCard(): void {
     if (!this.currentFlashcard) {
       this.errorMessage = 'No flashcard selected.';
       return;
     }
 
-    const cardId = this.currentFlashcard.card_id; // Usa card_id en lugar de id
+    const cardId = this.currentFlashcard.card_id; // Usa card_id como identificador
+    const updatedData = {
+      question: this.currentFlashcard.question,
+      answer: this.currentFlashcard.answer,
+      difficulty: this.currentFlashcard.difficulty,
+      category: this.currentFlashcard.category
+    };
+
+    this.isLoading = true;
+    this.flashcardsService.updateCard(cardId, updatedData).subscribe(
+      (response) => {
+        console.log('Card updated successfully:', response);
+        this.errorMessage = null;
+      },
+      (error) => {
+        console.error('Error updating card:', error);
+        this.errorMessage = 'Failed to update card.';
+      },
+      () => {
+        this.isLoading = false;
+      }
+    );
+  }
+
+  // Eliminar una tarjeta
+  deleteCard(): void {
+    if (!this.currentFlashcard) {
+      this.errorMessage = 'No flashcard selected.';
+      return;
+    }
+
+    const cardId = this.currentFlashcard.card_id; // Usa card_id como identificador
     this.isLoading = true;
     this.flashcardsService.deleteCard(cardId).subscribe(
       (response) => {
         console.log('Card deleted successfully:', response);
         // Eliminar la tarjeta de la lista local
         this.flashcards = this.flashcards.filter((card) => card.card_id !== cardId);
-
-        // Actualizar la tarjeta activa
-        if (this.flashcards.length > 0) {
-          this.currentFlashcard = this.flashcards[0]; // Seleccionar la siguiente tarjeta
-        } else {
-          this.currentFlashcard = null; // No hay tarjetas restantes
-        }
+        this.currentFlashcard = null; // Deseleccionar la tarjeta actual
       },
       (error) => {
         console.error('Error deleting card:', error);

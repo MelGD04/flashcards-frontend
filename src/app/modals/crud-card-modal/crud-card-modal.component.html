@@ -12,7 +12,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary rounded-pill w-25" data-bs-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-danger rounded-pill w-25" data-bs-dismiss="modal" (click)="deleteCurrentCard()">Delete</button>
+                <button type="button" class="btn btn-danger rounded-pill w-25" data-bs-dismiss="modal" (click)="deleteCard()">Delete</button>
             </div>
         </div>
     </div>
@@ -28,56 +28,88 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
             </div>
             <div class="modal-body">
-                <form>
+                <form (ngSubmit)="updateCard()">
+                    <!-- Question Input -->
                     <div class="mb-3">
-                        <label for="nameInput" class="form-label">New Question:</label>
-                        <input type="text" class="form-control rounded-pill" id="nameInput" placeholder="">
+                        <label for="questionInput" class="form-label">Question:</label>
+                        <input type="text" class="form-control rounded-pill" id="questionInput" [(ngModel)]="currentFlashcard.question"
+                            name="question" placeholder="Enter the question" required />
                     </div>
-                </form>
-
-                <form>
+                
+                    <!-- Answer Input -->
                     <div class="mb-3">
-                        <label for="nameInput" class="form-label">New Answer:</label>
-                        <input type="text" class="form-control rounded-pill" id="nameInput" placeholder="">
+                        <label for="answerInput" class="form-label">Answer:</label>
+                        <input type="text" class="form-control rounded-pill" id="answerInput" [(ngModel)]="currentFlashcard.answer"
+                            name="answer" placeholder="Enter the answer" required />
                     </div>
-                </form>
-
-                <form>
+                
+                    <!-- Category Select -->
                     <div class="mb-3">
-                        <label class="form-label" for="inputGroupSelect01">New Category:</label>
-                        <select class="form-select rounded-pill" id="inputGroupSelect01">
-                            <option selected>Choose...</option>
-                            <option value="1">One</option>
-                            <option value="2">Two</option>
-                            <option value="3">Three</option>
+                        <label class="form-label" for="inputGroupSelect01">Category:</label>
+                        <select class="form-select rounded-pill" id="inputGroupSelect01" [(ngModel)]="currentFlashcard.category"
+                            name="category" required>
+                            <option selected disabled>Choose...</option>
+                            <!-- Iterar sobre las categorías existentes -->
+                            <option *ngFor="let category of categories" [value]="category.category_name">
+                                {{ category.category_name }}
+                            </option>
+                            <!-- Opción para agregar una nueva categoría -->
+                            <option value="add-new">Add another category</option>
                         </select>
                     </div>
+                
+                    <!-- Add New Category Input -->
+                    <div *ngIf="currentFlashcard.category === 'add-new'" class="mb-3">
+                        <label for="newCategoryInput" class="form-label">New Category:</label>
+                        <div class="input-group">
+                            <input type="text" id="newCategoryInput" class="form-control rounded-pill" [(ngModel)]="newCategoryName"
+                                name="newCategoryName" placeholder="Enter new category name" />
+                            <button type="button"
+                                class="btn btn-outline-secondary position-absolute top-50 end-0 translate-middle-y me-2 border-0 bg-transparent"
+                                (click)="addCategory()">
+                                <i class="fas fa-pen"></i>
+                            </button>
+                        </div>
+                    </div>
+                
+                    <!-- Difficulty Level -->
+                    <div class="mb-3">
+                        <label class="form-label d-block">Difficulty Level:</label>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" [(ngModel)]="currentFlashcard.difficulty" name="difficulty"
+                                id="easy" value="easy" required />
+                            <label class="form-check-label" for="easy">Easy</label>
+                        </div>
+                
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" [(ngModel)]="currentFlashcard.difficulty" name="difficulty"
+                                id="intermediate" value="intermediate" />
+                            <label class="form-check-label" for="intermediate">Intermediate</label>
+                        </div>
+                
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" [(ngModel)]="currentFlashcard.difficulty" name="difficulty"
+                                id="hard" value="hard" />
+                            <label class="form-check-label" for="hard">Hard</label>
+                        </div>
+                    </div>
+                
+                    <!-- Modal Footer -->
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary rounded-pill w-25" data-bs-dismiss="modal">
+                            Close
+                        </button>
+                        <button type="submit" class="btn btn-primary rounded-pill w-25">
+                            Update
+                        </button>
+                    </div>
                 </form>
-
-                <div class="mb-3">
-                    <label class="form-label d-block">New Difficulty Level:</label>
-                    <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="radio" name="dificultad" id="facil" value="fácil">
-                        <label class="form-check-label" for="facil">Easy</label>
-                    </div>
-
-                    <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="radio" name="dificultad" id="intermedio"
-                            value="intermedio">
-                        <label class="form-check-label" for="intermedio">Intermediate</label>
-                    </div>
-
-                    <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="radio" name="dificultad" id="dificil" value="difícil">
-                        <label class="form-check-label" for="dificil">Hard</label>
-                    </div>
-                </div>
 
 
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary rounded-pill w-25" data-bs-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary rounded-pill w-25">Update</button>
+                <button type="button" class="btn btn-primary rounded-pill w-25" (click)="updateCard()" data-bs-dismiss="modal">Update</button>
             </div>
         </div>
     </div>
