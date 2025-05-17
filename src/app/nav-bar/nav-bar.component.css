@@ -73,7 +73,7 @@
 }
 .dropdown2:hover .dropdown-menu {
   display: block;
-  margin-top: 10px;
+  margin-top: 2px;
   right: 10px;
   left: auto;     
 }

@@ -82,6 +82,7 @@ export class AuthModalComponent {
         localStorage.setItem('access_token', res.tokens.access);
         localStorage.setItem('refresh_token', res.tokens.refresh);
         this.showToast('Login successfully! Welcome back!', 'Success');
+        location.href="";
  
       },
       error: (err) => {
@@ -125,7 +126,7 @@ export class AuthModalComponent {
   onLogout(): void {
     this.authService.logout();
     this.showToast('You have been logged out.', 'Success');
-    
+    location.href = "";
   }
 
   deleteAccount(): void {

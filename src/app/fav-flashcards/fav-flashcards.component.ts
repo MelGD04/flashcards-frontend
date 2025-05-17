@@ -4,6 +4,7 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FlashcardsService } from '../services/flashcards.service';
 import { ThemeService } from '../services/theme.service';
 import { CommonModule } from '@angular/common';
+import { AuthService } from '../services/auth.service';
 
 @Component({
   selector: 'app-fav-flashcards',
@@ -16,12 +17,17 @@ import { CommonModule } from '@angular/common';
 export class FavFlashcardsComponent implements OnInit{
   favoriteCards: any[] = []; // Lista de tarjetas favoritas
   isLightTheme = true;
+  isLoggedIn: boolean = false;
 
-  constructor(private flashcardService: FlashcardsService, private themeService: ThemeService){}
+  constructor(
+    private flashcardService: FlashcardsService, 
+    private themeService: ThemeService,
+    private authService: AuthService
+  ){}
 
   ngOnInit(): void {
     this.loadFavoriteCards();
-
+    this.isLoggedIn = this.authService.isAuthenticated();
     this.themeService.getTheme().subscribe((isLight) => {
       this.isLightTheme = isLight;
     });

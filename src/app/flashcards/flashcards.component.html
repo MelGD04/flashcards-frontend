@@ -1,4 +1,32 @@
-@if(isLoggedIn && flashcards.length > 0) {
+<!-- Si no está logueado -->
+@if(!isLoggedIn) {
+<div class="d-flex flex-column justify-content-center align-items-center vh-100"
+    [ngClass]="{ 'cards-dark': !isLightTheme, 'cards-light': isLightTheme }">
+    <div class="no-login text-center mt-4">
+        <i class="fas fa-lock fa-3x text-danger"></i>
+        <h3 class="mt-2">You must be logged in to see your flashcards</h3>
+        <p>Please log in to access your content.</p>
+    </div>
+</div>
+}
+
+<!-- Si no hay tarjetas -->
+@else if(isLoggedIn && flashcards.length === 0) {
+<div class="d-flex flex-column justify-content-center align-items-center vh-100"
+    [ngClass]="{ 'cards-dark': !isLightTheme, 'cards-light': isLightTheme }">
+    <div class="no-cards-message text-center mt-4">
+        <i class="fas fa-exclamation-circle fa-3x text-warning"></i>
+        <h3 class="mt-2">No flashcards available</h3>
+        <p>Start by adding your first flashcard!</p>
+        <button class="btn btn-outline-primary rounded-pill" data-bs-toggle="modal" data-bs-target="#addFlashcardModal">
+            Add Flashcard
+        </button>
+    </div>
+</div>
+}
+
+<!--Si esta logueado y tiene flashcards-->
+@else if(isLoggedIn && flashcards.length > 0){
 <main class="container d-flex flex-column justify-content-center align-items-center gap-4 vh-100"
     [ngClass]="{ 'cards-dark': !isLightTheme, 'cards-light': isLightTheme }">
     <!-- Filtros -->
@@ -28,7 +56,7 @@
                     <strong>revisedCards</strong> / {{ flashcards.length }} tarjetas
                 </p>
                 <p class="mb-0 text-success"><i class="fas fa-check-circle"></i> b </p>
-                <p class="mb-0 text-danger"><i class="fas fa-times-circle"></i>   </p>
+                <p class="mb-0 text-danger"><i class="fas fa-times-circle"></i> </p>
                 <p class="mb-0">Precision: /p>
             </div>
         </div>
@@ -87,25 +115,25 @@
                 </button>
             </div>
 
-            
+
         </div>
 
         <!-- Botón Siguiente -->
         <button class="btn nav-btn" (click)="nextCard()">
             <i class="fas fa-arrow-right"></i>
         </button>
-        
+
         <div class="d-flex flex-column justify-content-start align-items-center gap-2 p-3 rounded shadow-sm"
             style="min-width: 160px; background: rgba(255, 255, 255, 0.1); height: 100%; box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3); border-radius:10px">
             <h6 class="fw-bold">Progress</h6>
-        
+
             <!-- Barra de progreso vertical -->
             <div class="progress position-relative" style="width: 8px; height: 150px; background-color: #444;">
-                <div class="progress-bar-vertical bg-success position-absolute bottom-0" role="progressbar" aria-valuemin="0"
-                    aria-valuemax="100">
+                <div class="progress-bar-vertical bg-success position-absolute bottom-0" role="progressbar"
+                    aria-valuemin="0" aria-valuemax="100">
                 </div>
             </div>
-        
+
             <!-- Estadísticas -->
             <div class="text-center small mt-2">
                 <p class="mb-0">
@@ -118,33 +146,8 @@
         </div>
     </div>
 </main>
-}
 
-<!-- Si no hay tarjetas -->
-@else if(isLoggedIn && flashcards.length === 0) {
-<div class="d-flex flex-column justify-content-center align-items-center vh-100"
-    [ngClass]="{ 'cards-dark': !isLightTheme, 'cards-light': isLightTheme }">
-    <div class="no-cards-message text-center mt-4">
-        <i class="fas fa-exclamation-circle fa-3x text-warning"></i>
-        <h3 class="mt-2">No flashcards available</h3>
-        <p>Start by adding your first flashcard!</p>
-        <button class="btn btn-outline-primary rounded-pill" data-bs-toggle="modal" data-bs-target="#addFlashcardModal">
-            Add Flashcard
-        </button>
-    </div>
-</div>
-}
 
-<!-- Si no está logueado -->
-@else {
-<div class="d-flex flex-column justify-content-center align-items-center vh-100"
-    [ngClass]="{ 'cards-dark': !isLightTheme, 'cards-light': isLightTheme }">
-    <div class="no-login text-center mt-4">
-        <i class="fas fa-lock fa-3x text-danger"></i>
-        <h3 class="mt-2">You must be logged in to see your flashcards</h3>
-        <p>Please log in to access your content.</p>
-    </div>
-</div>
 }
 
 <app-crud-card-modal></app-crud-card-modal>

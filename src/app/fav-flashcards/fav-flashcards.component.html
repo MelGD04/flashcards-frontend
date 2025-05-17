@@ -3,19 +3,44 @@
     <div class="text-center w-100 py-3 position-sticky shadow">
         <h3 class="fw-bold"><i class="fas fa-star"></i> Favorite Flashcards</h3>
     </div>
-    <div class="container flex-grow-1 overflow-y-auto w-100 top-0 no-scrollbar pt-4">
-        <div class="row g-4 justify-content-center">
-            @for (favorites of favoriteCards; track favorites.favorite) {
-            <div class="col-12 col-sm-6 col-md-4 col-lg-3 d-flex justify-content-center">
-                <div class="cardContainer">
-                    <div class="card">
-                        <h5 class="text-center">{{favorites.question}}</h5>
-                    </div>
-                </div>
-    
+    <!-- Si no está logueado -->
+    @if(!isLoggedIn) {
+        <div class="container flex-grow-1 overflow-y-auto w-100 top-0 no-scrollbar pt-4">
+            <div class="no-login text-center justify-content-center">
+                <i class="fas fa-lock fa-3x text-danger"></i>
+                <h3 class="mt-2">You must be logged in to see your favorite flashcards</h3>
+                <p>Please log in to access your content.</p>
             </div>
-            }
         </div>
-    </div>
+    }
+    
+    <!-- Si no hay tarjetas -->
+    @else if(isLoggedIn && favoriteCards.length === 0) {
+        <div class="container flex-grow-1 overflow-y-auto w-100 top-0 no-scrollbar pt-4">
+            <div class="no-cards-message text-center row justify-content-center mt-4">
+                <i class="fas fa-exclamation-circle fa-3x text-warning"></i>
+                <h3 class="mt-2">No flashcards available</h3>
+                <p>Start by adding your first flashcard!</p>
+            </div>
+        </div>
+    }
+    
+    <!--Si esta logueado y tiene flashcards-->
+    @else if(isLoggedIn && favoriteCards.length > 0){
+        <div class="container flex-grow-1 overflow-y-auto w-100 top-0 no-scrollbar pt-4">
+            <div class="row g-4 justify-content-center">
+                @for (favorites of favoriteCards; track favorites.favorite) {
+                <div class="col-12 col-sm-6 col-md-4 col-lg-3 d-flex justify-content-center">
+                    <div class="cardContainer">
+                        <div class="card">
+                            <h5 class="text-center">{{favorites.question}}</h5>
+                        </div>
+                    </div>
+        
+                </div>
+                }
+            </div>
+        </div>
+    }
 </div>
 
