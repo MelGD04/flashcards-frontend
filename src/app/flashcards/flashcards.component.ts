@@ -1,44 +1,55 @@
+import { Inject, Component, OnInit, PLATFORM_ID } from '@angular/core';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { AuthService } from './../services/auth.service';
 import { ThemeService } from './../services/theme.service';
-import { Component } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { FlashcardsService } from './../services/flashcards.service';
 import { CrudCardModalComponent } from "../modals/crud-card-modal/crud-card-modal.component";
 import { FilterModalComponent } from "../modals/filter-modal/filter-modal.component";
 
 @Component({
   selector: 'app-flashcards',
+  standalone: true,
   imports: [
     CommonModule,
     CrudCardModalComponent,
     FilterModalComponent
   ],
   templateUrl: './flashcards.component.html',
-  styleUrl: './flashcards.component.css'
+  styleUrls: ['./flashcards.component.css']
 })
-export class FlashcardsComponent {
+export class FlashcardsComponent implements OnInit {
   flashcards: any[] = [];
-  currentIndex: number = 0;
+  currentCard: any = null;
+  currentIndex = 0;
   isFlipped = false;
   isLightTheme = true;
-  errorMessage: string = '';
-  isFavorite: boolean = false;
-  isLoggedIn: boolean = false;
-  currentCard: any = null;
-  showStatsSidebar = false;
-  isLoading: boolean = false;
+  isFavorite = false;
+  isLoggedIn = false;
+  isLoading = false;
+  errorMessage = '';
+
+  private isBrowser: boolean;
 
   constructor(
-    public flashcardsService: FlashcardsService,
+    private flashcardsService: FlashcardsService,
     private themeService: ThemeService,
-    private authService: AuthService
-  ) { }
+    private authService: AuthService,
+    @Inject(PLATFORM_ID) platformId: Object
+  ) {
+    this.isBrowser = isPlatformBrowser(platformId);
+  }
 
   ngOnInit(): void {
-    this.isLoggedIn = this.authService.isAuthenticated();
-    this.loadFlashcards();
+    if (this.isBrowser) {
+      this.isLoggedIn = this.authService.isAuthenticated();
+      if (this.isLoggedIn) {
+        this.loadFlashcards();
+      }
+    } else {
+      console.warn('Not running in a browser environment.');
+    }
 
-    this.themeService.getTheme().subscribe((isLight) => {
+    this.themeService.getTheme().subscribe(isLight => {
       this.isLightTheme = isLight;
     });
   }
@@ -51,62 +62,46 @@ export class FlashcardsComponent {
 
     this.isLoading = true;
     this.flashcardsService.getFlashcards().subscribe(
-      (data) => {
+      data => {
         this.flashcards = data;
-        if (this.flashcards.length > 0) {
+        if (this.flashcards.length) {
+          this.currentIndex = 0;
           this.currentCard = this.flashcards[0];
           this.checkIfFavorite(this.currentCard.card_id);
-        } else {
-          console.warn('No flashcards available.');
         }
       },
-      (error) => {
-        this.handleError(error, 'Error fetching flashcards.');
-      },
-      () => {
-        this.isLoading = false;
-      }
+      error => this.handleError(error, 'Error fetching flashcards.'),
+      () => (this.isLoading = false)
     );
   }
 
-  private navigateToCard(index: number): void {
-    if (index >= 0 && index < this.flashcards.length) {
-      this.currentCard = this.flashcards[index];
-      this.checkIfFavorite(this.currentCard.card_id);
-    } else {
-      console.warn('Invalid card index:', index);
-    }
-  }
-
   previousCard(): void {
-    const currentIndex = this.flashcards.indexOf(this.currentCard);
-    this.navigateToCard(currentIndex - 1);
+    this.navigateToCard(this.currentIndex - 1);
   }
 
   nextCard(): void {
-    const currentIndex = this.flashcards.indexOf(this.currentCard);
-    this.navigateToCard(currentIndex + 1);
+    this.navigateToCard(this.currentIndex + 1);
+  }
+
+  private navigateToCard(index: number): void {
+    if (index < 0 || index >= this.flashcards.length) return;
+    this.currentIndex = index;
+    this.currentCard = this.flashcards[index];
+    this.checkIfFavorite(this.currentCard.card_id);
   }
 
   checkIfFavorite(cardId: number): void {
-    if (!cardId) {
-      console.error('Card ID is undefined.');
-      return;
-    }
-
     this.flashcardsService.getFavoriteCards().subscribe(
-      (favorites) => {
-        this.isFavorite = favorites.some((card: any) => card.card_id === cardId);
+      favorites => {
+        this.isFavorite = favorites.some((c: any) => c.card_id === cardId);
       },
-      (error) => {
-        this.handleError(error, 'Error checking favorite status.');
-      }
+      error => this.handleError(error, 'Error checking favorite status.')
     );
   }
 
   toggleFavorite(): void {
-    if (!this.currentCard || !this.currentCard.card_id) {
-      console.error('Current card or card ID is undefined.');
+    if (!this.currentCard?.card_id) {
+      console.warn('No card selected. Cannot toggle favorite status.');
       return;
     }
 
@@ -115,12 +110,8 @@ export class FlashcardsComponent {
       : this.flashcardsService.addFavorite(this.currentCard.card_id);
 
     action.subscribe(
-      (response) => {
-        this.isFavorite = !this.isFavorite;
-      },
-      (error) => {
-        this.handleError(error, 'Error toggling favorite status.');
-      }
+      () => (this.isFavorite = !this.isFavorite),
+      error => this.handleError(error, 'Error toggling favorite status.')
     );
   }
 
@@ -130,7 +121,15 @@ export class FlashcardsComponent {
 
   private handleError(error: any, defaultMessage: string): void {
     console.error(defaultMessage, error);
-    this.errorMessage = error?.error?.message || defaultMessage;
+
+    if (error.status === 401) {
+      this.errorMessage = 'Session expired. Please log in again.';
+      if (this.isBrowser) {
+        this.authService.logout();
+        location.href = '/login'; // Redirige al usuario al inicio de sesión
+      }
+    } else {
+      this.errorMessage = error?.error?.detail || defaultMessage;
+    }
   }
 }
-

@@ -131,29 +131,10 @@ export class CrudCardModalComponent implements OnInit {
   }
 
   // Eliminar una tarjeta
-  deleteCard(): void {
-    if (!this.currentFlashcard) {
-      this.errorMessage = 'No flashcard selected.';
-      return;
-    }
-
-    const cardId = this.currentFlashcard.card_id; // Usa card_id como identificador
-    this.isLoading = true;
-    this.flashcardsService.deleteCard(cardId).subscribe(
-      (response) => {
-        console.log('Card deleted successfully:', response);
-        // Eliminar la tarjeta de la lista local
-        this.flashcards = this.flashcards.filter((card) => card.card_id !== cardId);
-        this.currentFlashcard = null; // Deseleccionar la tarjeta actual
-      },
-      (error) => {
-        console.error('Error deleting card:', error);
-        this.errorMessage = 'Failed to delete card.';
-      },
-      () => {
-        this.isLoading = false;
-      }
-    );
+  deleteCard(cardId: number): void {
+    console.log('Deleting card with ID:', cardId);
+    this.flashcardsService.deleteCard(cardId).subscribe({
+    });
   }
 
   // Cambiar la tarjeta activa

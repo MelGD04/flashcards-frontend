@@ -29,6 +29,7 @@
                         <label class="form-label" for="inputGroupSelect01">Category:</label>
                         <select class="form-select rounded-pill" id="inputGroupSelect01"
                             [(ngModel)]="newFlashcard.category" name="category" required>
+                           
                             <option selected disabled>Choose...</option>
                             <!-- Iterar sobre las categorías existentes -->
                             <option *ngFor="let category of categories" [value]="category.category_name">
@@ -36,6 +37,7 @@
                             </option>
                             <!-- Opción para agregar una nueva categoría -->
                             <option value="add-new">Add another category</option>
+                            
                         </select>
                     </div>
 

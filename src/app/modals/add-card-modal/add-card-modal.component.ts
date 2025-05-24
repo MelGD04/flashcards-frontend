@@ -1,11 +1,12 @@
 import { FormsModule } from '@angular/forms';
 import { FlashcardsComponent } from './../../flashcards/flashcards.component';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Inject, PLATFORM_ID } from '@angular/core';
 import { ThemeService } from '../../services/theme.service';
 import { CommonModule } from '@angular/common';
 import { FlashcardsService } from '../../services/flashcards.service';
 import { CategoryService } from '../../services/category.service';
 import { HttpHeaders } from '@angular/common/http';
+import { isPlatformBrowser } from '@angular/common';
 
 @Component({
   selector: 'app-add-card-modal',
@@ -27,7 +28,8 @@ export class AddCardModalComponent implements OnInit {
   constructor(
     private themeService: ThemeService,
     private flashcardsService: FlashcardsService,
-    private categoryService: CategoryService
+    private categoryService: CategoryService,
+    @Inject(PLATFORM_ID) private platformId: Object
   ) { }
 
   ngOnInit(): void {
@@ -58,6 +60,11 @@ export class AddCardModalComponent implements OnInit {
 
   // Cargar categorías existentes
   loadCategories(): void {
+    if (!isPlatformBrowser(this.platformId)) {
+      console.error('Not running in a browser environment.');
+      return;
+    }
+
     const token = localStorage.getItem('access_token'); // Obtén el token del almacenamiento local
     if (!token) {
       console.error('No access token found. User is not authenticated.');

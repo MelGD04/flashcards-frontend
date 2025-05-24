@@ -53,16 +53,13 @@ export class FlashcardsService {
 
     // Eliminar una tarjeta
     deleteCard(cardId: number): Observable<any> {
-        const url = `${this.apiUrl}delete/`; // Endpoint para eliminar tarjetas
-        const token = localStorage.getItem('access_token'); // Obtén el token del almacenamiento local
-
-        let headers = new HttpHeaders();
-        if (token) {
-            headers = headers.set('Authorization', `Bearer ${token}`);
+        const headers = this.getAuthHeaders();
+        if (!headers.has('Authorization')) {
+            return throwError(() => new Error('Unauthorized: No access token found.'));
         }
 
-        // Enviar el card_id en el cuerpo de la solicitud
-        return this.http.delete(url, { headers, body: { card_id: cardId } }).pipe(
+        const url = `${this.apiUrl}${cardId}/delete/`;
+        return this.http.delete(url, { headers }).pipe(
             catchError((error) => {
                 console.error('Error deleting card:', error);
                 return throwError(() => error);
@@ -98,20 +95,20 @@ export class FlashcardsService {
 
     // Obtener encabezados de autenticación
     private getAuthHeaders(): HttpHeaders {
-        let headers = new HttpHeaders();
-
-        if (isPlatformBrowser(this.platformId)) {
-            const token = localStorage.getItem('access_token');
-            if (token) {
-                headers = headers.set('Authorization', `Bearer ${token}`);
-            } else {
-                console.warn('No access token found in localStorage.');
-            }
-        } else {
+        if (!isPlatformBrowser(this.platformId)) {
             console.warn('Not running in a browser environment.');
+            return new HttpHeaders(); // Devuelve encabezados vacíos
         }
 
-        return headers;
+        const token = localStorage.getItem('access_token');
+        if (!token) {
+            console.warn('No access token found in localStorage.');
+            return new HttpHeaders(); // Devuelve encabezados vacíos
+        }
+
+        return new HttpHeaders({
+            'Authorization': `Bearer ${token}`
+        });
     }
 
     // Manejo centralizado de errores

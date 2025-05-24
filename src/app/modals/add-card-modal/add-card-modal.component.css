@@ -105,3 +105,16 @@
   padding: 10px 15px;
   border: 1px solid #ccc;
 }
+
+.modal-dark .option-content {
+  border: 1px solid #444;
+  background: rgba(25, 25, 25, 0);
+  backdrop-filter: blur(10px);
+  border-radius: 20px;
+}
+.navbar-light .dropdown-menu {
+  border: 1px solid #333;
+  background: rgba(25, 25, 25, 0.1);
+  backdrop-filter: blur(10px);
+  border-radius: 20px;
+}

@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { BehaviorSubject, Observable, throwError } from 'rxjs';
 import { catchError, switchMap, tap } from 'rxjs/operators';
 import { isPlatformBrowser } from '@angular/common';
+
 @Injectable({
   providedIn: 'root'
 })
@@ -21,18 +22,18 @@ export class AuthService {
 
   login(username: string, password: string): Observable<any> {
     const body = { username, password };
-
-    return this.http.post(this.apiUrlLogin, body);
-  }
-
-  validateName(completeName: string): Observable<any> {
-    return this.http.post('http://127.0.0.1:8000/api/auth/validate-name/', {
-      complete_name: completeName
-    });
+    return this.http.post(this.apiUrlLogin, body).pipe(
+      tap((res: any) => {
+        if (this.isBrowser && res.access && res.refresh) {
+          localStorage.setItem('access_token', res.access);
+          localStorage.setItem('refresh_token', res.refresh);
+        }
+      })
+    );
   }
 
   signup(first_name: string, last_name: string, username: string, email: string, password: string): Observable<any> {
-    return this.http.post('http://127.0.0.1:8000/api/auth/signup/', {
+    return this.http.post(`${this.apiUrl}signup/`, {
       first_name,
       last_name,
       username,
@@ -41,14 +42,17 @@ export class AuthService {
     });
   }
 
+  validateName(completeName: string): Observable<any> {
+    return this.http.post(`${this.apiUrl}validate-name/`, {
+      complete_name: completeName
+    });
+  }
 
   isAuthenticated(): boolean {
     if (!this.isBrowser) {
-      // estamos en SSR o test, localStorage no existe
       return false;
     }
-    const token = localStorage.getItem('access_token');
-    return !!token;
+    return !!localStorage.getItem('access_token');
   }
 
   logout(): void {
@@ -58,36 +62,45 @@ export class AuthService {
     }
   }
 
-  deleteAuthenticatedUser(): Observable<any> {
-    const url = `http://127.0.0.1:8000/api/auth/delete-user/`; // Endpoint para eliminar al usuario autenticado
-    let headers = new HttpHeaders();
-
-    const token = this.getToken();
-    if (token) {
-      headers = headers.set('Authorization', `Bearer ${token}`);
+  private getToken(): string | null {
+    if (!this.isBrowser) {
+      return null;
     }
+    return localStorage.getItem('access_token');
+  }
 
-    return this.http.delete(url, { headers }).pipe(
-      catchError((error) => {
+  private getAuthHeaders(): HttpHeaders {
+    if (!this.isBrowser) {
+      console.warn('Not running in a browser environment.');
+      return new HttpHeaders();
+    }
+    const token = this.getToken();
+    if (!token) {
+      console.warn('No access token found in localStorage.');
+      return new HttpHeaders();
+    }
+    return new HttpHeaders({
+      'Authorization': `Bearer ${token}`
+    });
+  }
+
+  getCurrentUser(): Observable<any> {
+    if (!this.isAuthenticated()) {
+      return throwError(() => new Error('User is not authenticated'));
+    }
+    return this.http.get(`${this.apiUrl}current-user/`, { headers: this.getAuthHeaders() });
+  }
+
+  deleteAuthenticatedUser(): Observable<any> {
+    if (!this.isAuthenticated()) {
+      return throwError(() => new Error('User is not authenticated'));
+    }
+    const url = `${this.apiUrl}delete-user/`;
+    return this.http.delete(url, { headers: this.getAuthHeaders() }).pipe(
+      catchError(error => {
         console.error('Error deleting user:', error);
         return throwError(() => error);
       })
     );
-  }
-
-  private getToken(): string | null {
-    if (this.isBrowser) {
-      return localStorage.getItem('access_token');
-    }
-    return null;
-  }
-
-  getCurrentUser(): Observable<any> {
-    const token = localStorage.getItem('access_token'); // Obtén el token del almacenamiento local
-    const headers = new HttpHeaders({
-      Authorization: `Bearer ${token}`
-    });
-
-    return this.http.get(`${this.apiUrl}current-user/`, { headers });
   }
 }

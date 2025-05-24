@@ -1,9 +1,10 @@
-import { AfterViewInit, Component, ElementRef, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, ViewChild, Inject, PLATFORM_ID } from '@angular/core';
 import { FormBuilder, FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { ThemeService } from '../../services/theme.service';
 import { AuthService } from '../../services/auth.service';
 import { Router } from '@angular/router';
+import { isPlatformBrowser } from '@angular/common';
 declare var bootstrap: any;
 
 @Component({
@@ -32,7 +33,15 @@ export class AuthModalComponent {
   passwordSignUp: string = '';
   errorMessage: string = '';
 
-  constructor(private themeService: ThemeService, private authService: AuthService) { }
+  private isBrowser: boolean;
+
+  constructor(
+    private themeService: ThemeService,
+    private authService: AuthService,
+    @Inject(PLATFORM_ID) platformId: Object
+  ) {
+    this.isBrowser = isPlatformBrowser(platformId);
+  }
 
   ngOnInit() {
     this.themeService.getTheme().subscribe((isLight) => {
@@ -75,15 +84,21 @@ export class AuthModalComponent {
   }
 
   onLogin() {
+    if (!this.isBrowser) {
+      console.error('Login is not supported in a non-browser environment.');
+      return;
+    }
+
     this.isLoading = true;
     this.authService.login(this.usernameLogin, this.passwordLogin).subscribe({
       next: (res) => {
         console.log('Login exitoso:', res);
-        localStorage.setItem('access_token', res.tokens.access);
-        localStorage.setItem('refresh_token', res.tokens.refresh);
+        if (this.isBrowser) {
+          localStorage.setItem('access_token', res.tokens.access);
+          localStorage.setItem('refresh_token', res.tokens.refresh);
+        }
         this.showToast('Login successfully! Welcome back!', 'Success');
-        location.href="";
- 
+        location.href = ""; // Redirige al usuario
       },
       error: (err) => {
         this.handleError(err, 'Login failed! Please try again.');
@@ -106,7 +121,6 @@ export class AuthModalComponent {
           next: (response) => {
             console.log('User registered successfully:', response);
             this.showToast('Signup successful! Welcome!', 'Success');
-            
           },
           error: (error) => {
             this.handleError(error, 'Signup failed! Please try again.');
@@ -124,9 +138,13 @@ export class AuthModalComponent {
   }
 
   onLogout(): void {
-    this.authService.logout();
-    this.showToast('You have been logged out.', 'Success');
-    location.href = "";
+    if (this.isBrowser) {
+      this.authService.logout();
+      this.showToast('You have been logged out.', 'Success');
+      location.href = ""; // Redirige al usuario
+    } else {
+      console.error('Logout is not supported in a non-browser environment.');
+    }
   }
 
   deleteAccount(): void {
@@ -135,8 +153,9 @@ export class AuthModalComponent {
       next: (response) => {
         console.log('User deleted successfully:', response);
         this.showToast('Your account has been deleted successfully.', 'Success');
-        this.authService.logout();
-        
+        if (this.isBrowser) {
+          this.authService.logout();
+        }
       },
       error: (error) => {
         this.handleError(error, 'An error occurred while deleting your account. Please try again.');
