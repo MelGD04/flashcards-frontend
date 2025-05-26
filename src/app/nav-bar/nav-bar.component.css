@@ -1,5 +1,5 @@
 .navbar-dark{
-  background: rgba(25, 25, 25, 0.5);
+  background: rgba(25, 25, 25, 0.1);
   color: #fff;
   backdrop-filter: blur(10px);
 }

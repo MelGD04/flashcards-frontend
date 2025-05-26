@@ -9,7 +9,7 @@ body {
 }
 body.dark-theme{
   color:white;
-  background: linear-gradient(to bottom, #000000, #434343);
+  background: rgb(26, 26, 26);
 }
 body.light-theme{
   color:black;

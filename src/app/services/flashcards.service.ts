@@ -35,15 +35,8 @@ export class FlashcardsService {
 
     // Actualizar una tarjeta
     updateCard(cardId: number, data: any): Observable<any> {
-        const url = `${this.apiUrl}${cardId}/`; // Endpoint para actualizar tarjetas
-        const token = localStorage.getItem('access_token'); // Obtén el token del almacenamiento local
-
-        let headers = new HttpHeaders();
-        if (token) {
-            headers = headers.set('Authorization', `Bearer ${token}`);
-        }
-
-        return this.http.put(url, data, { headers }).pipe(
+        console.log('Updating card with data:', data); // Depuración
+        return this.http.put(`${this.apiUrl}${cardId}/`, data, { headers: this.getAuthHeaders() }).pipe(
             catchError((error) => {
                 console.error('Error updating card:', error);
                 return throwError(() => error);

@@ -22,6 +22,7 @@ export class CrudCardModalComponent implements OnInit {
   isLightTheme = true; // Tema actual
   isLoading = false; // Estado de carga
   errorMessage: string | null = null; // Mensaje de error
+  currentIndex = 0;
 
   constructor(
     private themeService: ThemeService,
@@ -52,11 +53,14 @@ export class CrudCardModalComponent implements OnInit {
         this.flashcards = data;
         if (this.flashcards.length > 0) {
           this.currentFlashcard = this.flashcards[0]; // Seleccionar la primera tarjeta como activa
+        } else {
+          this.currentFlashcard = null; // No hay tarjetas disponibles
         }
       },
       (error) => {
         console.error('Error fetching flashcards:', error);
         this.errorMessage = 'Failed to load flashcards.';
+        this.currentFlashcard = null; // Manejar el error adecuadamente
       },
       () => {
         this.isLoading = false;
@@ -141,4 +145,6 @@ export class CrudCardModalComponent implements OnInit {
   setCurrentFlashcard(card: any): void {
     this.currentFlashcard = card;
   }
+
+
 }
