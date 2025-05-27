@@ -53,6 +53,8 @@ export class UserModalComponent {
     });
   }
 
+  
+
   private handleError(error: any, defaultMessage: string): void {
     console.error(defaultMessage, error);
     const message = error?.error?.message || defaultMessage;
