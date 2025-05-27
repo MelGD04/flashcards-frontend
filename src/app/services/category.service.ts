@@ -9,6 +9,8 @@ import { isPlatformBrowser } from '@angular/common';
 })
 export class CategoryService {
   private apiUrl = 'http://127.0.0.1:8000/api/auth/categories/'; // URL base para categorías
+  private apiUrlAddCategory = 'http://127.0.0.1:8000/api/auth/add';
+  private apiUrlFlashcardsbyCategory = 'http://127.0.0.1:8000/api/auth/';
 
   constructor(
     private http: HttpClient,
@@ -23,10 +25,18 @@ export class CategoryService {
     );
   }
 
+  // Obtener Flashcards de la misma categoría
+  getFlashcardsByCategory(categoryName: string): Observable<any> {
+    const headers = this.getAuthHeaders();
+    return this.http.get(`${this.apiUrlFlashcardsbyCategory}${categoryName}/cards/`, { headers }).pipe(
+      catchError((error) => this.handleError(error))
+    );
+  }
+
   // Crear una nueva categoría
   createCategory(category_name: string): Observable<any> {
     const headers = this.getAuthHeaders();
-    return this.http.post(`${this.apiUrl}add/`, { category_name }, { headers }).pipe(
+    return this.http.post(this.apiUrlAddCategory, { category_name }, { headers }).pipe(
       catchError((error) => this.handleError(error))
     );
   }

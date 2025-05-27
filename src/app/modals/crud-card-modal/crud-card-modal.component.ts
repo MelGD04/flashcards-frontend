@@ -130,6 +130,7 @@ export class CrudCardModalComponent implements OnInit {
       },
       () => {
         this.isLoading = false;
+        location.reload();
       }
     );
   }
@@ -139,6 +140,7 @@ export class CrudCardModalComponent implements OnInit {
     console.log('Deleting card with ID:', cardId);
     this.flashcardsService.deleteCard(cardId).subscribe({
     });
+    window.location.reload();
   }
 
   // Cambiar la tarjeta activa

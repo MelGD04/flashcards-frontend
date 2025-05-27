@@ -13,37 +13,19 @@ import { ThemeService } from '../services/theme.service';
   templateUrl: './my-flashcards.component.html',
   styleUrl: './my-flashcards.component.css'
 })
-export class MyFlashcardsComponent {
+export class MyFlashcardsComponent implements OnInit {
   categories: any[] = []; // Lista de categorías existentes
+  flashcards: any[] = []; // Lista de flashcards de la categoría seleccionada
   newCategoryName: string = ''; // Nombre de la nueva categoría
   selectedCategory: string | null = null; // Categoría seleccionada
+  isLightTheme = true; // Tema actual
 
-  constructor(private flashcardServices: FlashcardsService, private themeService: ThemeService, private categoryService: CategoryService) { }
-  // Cargar categorías existentes
-  loadCategories(): void {
-    const token = localStorage.getItem('access_token'); // Obtén el token del almacenamiento local
-    if (!token) {
-      console.error('No access token found. User is not authenticated.');
-      return;
-    }
+  constructor(
+    private flashcardServices: FlashcardsService,
+    private themeService: ThemeService,
+    private categoryService: CategoryService
+  ) { }
 
-    // Llamada al servicio para obtener las categorías
-    this.categoryService.getCategories().subscribe(
-      (data: any[]) => {
-        this.categories = data; // Asigna las categorías obtenidas
-        console.log('Categories loaded:', this.categories); // Depuración: Verificar las categorías cargadas
-      },
-      (error) => {
-        console.error('Error fetching categories:', error); // Manejo de errores
-      }
-    );
-  }
-
-  isLightTheme = true;
-
-
-
-  //to esta talla tambien es de Dani
   ngOnInit(): void {
     this.loadCategories(); // Cargar categorías al iniciar
     this.themeService.getTheme().subscribe((isLight) => {
@@ -51,7 +33,51 @@ export class MyFlashcardsComponent {
     });
   }
 
-  toggleTheme() {
+  // Cargar categorías existentes
+  loadCategories(): void {
+    this.categoryService.getCategories().subscribe(
+      (data: any[]) => {
+        this.categories = data; // Asigna las categorías obtenidas
+        console.log('Categories loaded:', this.categories); // Depuración
+      },
+      (error) => {
+        console.error('Error fetching categories:', error); // Manejo de errores
+      }
+    );
+  }
+
+  // Cargar flashcards de la categoría seleccionada
+  loadFlashcardsByCategory(categoryName: string): void {
+    this.categoryService.getFlashcardsByCategory(categoryName).subscribe(
+      (data: any[]) => {
+        this.flashcards = data; // Asigna las flashcards obtenidas
+        console.log('Flashcards loaded:', this.flashcards); // Depuración: Verificar las flashcards cargadas
+      },
+      (error) => {
+        console.error('Error fetching flashcards:', error); // Manejo de errores
+      }
+    );
+  }
+
+  // Manejar la selección de una categoría
+  onCategorySelect(categoryName: string): void {
+    console.log('Selected categoryName:', categoryName); // Depuración
+    if (!categoryName) {
+      console.error('categoryId is undefined or null');
+      return;
+    }
+    this.selectedCategory = categoryName.toString(); // Actualiza la categoría seleccionada
+    this.loadFlashcardsByCategory(categoryName); // Carga las flashcards de la categoría seleccionada
+  }
+
+  // Alternar el tema
+  toggleTheme(): void {
     this.themeService.toggleTheme();
+  }
+
+  // Restablecer la categoría seleccionada y limpiar las flashcards
+  resetCategory(): void {
+    this.selectedCategory = null; // Restablece la categoría seleccionada
+    this.flashcards = []; // Limpia la lista de flashcards
   }
 }
