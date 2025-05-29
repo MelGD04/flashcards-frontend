@@ -42,7 +42,7 @@ export class UserModalComponent {
     this.isLoading = true;
     this.authService.getCurrentUser().subscribe(
       (data) => {
-        this.username = data.username;
+        this.username = data.userData.username;
       },
       (error) => {
         this.handleError(error, 'Error fetching current user.');

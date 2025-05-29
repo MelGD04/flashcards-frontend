@@ -97,11 +97,15 @@
   }
 }
 
-.custom-card {
-    background: #ffffff;
-    border: 1px solid #e5e7eb;
-    border-radius: 1rem;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+.modal-dark .custom-card {
+  background: transparent;
+  color:#f3f4f6;
+  border-radius: 20px;
+}
+.modal-light .custom-card{
+  background:transparent;
+  color: #111827;
+  border-radius: 20px;
 }
 
 .username-display {
