@@ -3,10 +3,11 @@
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header text-center d-flex flex-column">
-                <img src="/default-avatar.png" style="width: 50px; height:50px; border-radius: 50%; border:2px white solid;"
-                    alt="User Avatar" class="mb-2">
+                <img src="/default-avatar.png"
+                    style="width: 50px; height:50px; border-radius: 50%; border:2px white solid;" alt="User Avatar"
+                    class="mb-2">
                 <h1 class="modal-title fs-5 fw-bold" id="exampleModalToggleLabel">My Profile</h1>
-                
+
             </div>
             <div class="modal-body d-flex justify-content-center align-items-center flex-column">
                 <div class="user-settings card custom-card p-4 mb-4">
@@ -14,28 +15,45 @@
                     <div class="d-flex justify-content-between align-items-center">
                         <div>
                             <label class="form-label small">Username</label>
-                            <h5 class="username-display mb-0">{{ username }}</h5>
+                            <div *ngIf="!isEditingUsername; else editUsernameTemplate">
+                                <h5 class="username-display mb-0">{{ username }}</h5>
+                            </div>
+                            <ng-template #editUsernameTemplate>
+                                <input type="text" class="form-control mb-2" [(ngModel)]="userData.username"
+                                    name="username" required>
+                                <label class="form-label small">Current Password</label>
+                                <input type="password" class="form-control mb-2"
+                                    [(ngModel)]="passwordData.current_password" name="current_password" required>
+                                <button class="btn icon-btn" title="Cancel Edit" (click)="cancelEditUsername()">
+                                    <i class="fas" [ngClass]="isEditingUsername ? 'fa-times' : ''"></i>
+                                </button>
+                            </ng-template>
                         </div>
-                        <button class="btn icon-btn" title="Edit Username">
-                            <i class="fas fa-edit"></i>
-                        </button>
+                        <div class="d-flex flex-column">
+                            <button class="btn icon-btn mb-2" title="Edit Username" (click)="toggleEditUsername()">
+                                <i class="fas" [ngClass]="isEditingUsername ? 'fa-check' : 'fa-edit'"></i>
+                            </button>
+                            
+                        </div>
                     </div>
-                
+
                     <!-- Divider -->
                     <hr class="my-4" />
-                
+
                     <!-- Change Password Button -->
                     <div class="text-center">
-                        <button class="btn btn-custom-warning" data-bs-toggle="modal" data-bs-target="#changePasswordModal">
+                        <button class="btn btn-custom-warning" data-bs-toggle="modal"
+                            data-bs-target="#changePasswordModal">
                             <i class="fas fa-lock me-2"></i> Change Password
                         </button>
                     </div>
                 </div>
-                
+
             </div>
             <!-- Modal Footer -->
             <div class="modal-footer custom-footer">
-                <button type="button" class="btn btn-secondary rounded-pill w-25" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-secondary rounded-pill w-25"
+                    data-bs-dismiss="modal">Cancel</button>
                 <button type="submit" class="btn btn-primary px-4">Save Changes</button>
 
             </div>
@@ -44,32 +62,32 @@
 </div>
 <!-- Modal for changing password -->
 <div class="modal fade" id="changePasswordModal" aria-hidden="true" aria-labelledby="changePassword" tabindex="-1"
-[ngClass]="{ 'modal-dark': !isLightTheme, 'modal-light': isLightTheme }">
+    [ngClass]="{ 'modal-dark': !isLightTheme, 'modal-light': isLightTheme }">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
                 <h1 class="modal-title fs-5 fw-bold" id="changePasswordLabel">Change Password</h1>
-                <button type="button" class="btn-close" data-bs-toggle="modal" data-bs-target="#porfileModal" aria-label="Close"></button>
+                <button type="button" class="btn-close" data-bs-toggle="modal" data-bs-target="#porfileModal"
+                    aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <form >
+                <form (ngSubmit)="updatePassword()">
                     <div class="mb-3">
-                        <label for="newPassword" class="form-label">Current Password</label>
-                        <input type="password" id="newPassword" class="form-control" name="newPassword" required>
+                        <label for="currentPassword" class="form-label">Current Password</label>
+                        <input type="password" id="currentPassword" class="form-control"
+                            [(ngModel)]="passwordData.current_password" name="current_password" required>
                     </div>
-                    <!-- New Password Field -->
                     <div class="mb-3">
                         <label for="newPassword" class="form-label">New Password</label>
-                        <input type="password" id="newPassword" class="form-control" name="newPassword"
-                            required>
+                        <input type="password" id="newPassword" class="form-control"
+                            [(ngModel)]="passwordData.new_password" name="new_password" required>
                     </div>
-                    <!-- Confirm Password Field -->
                     <div class="mb-3">
                         <label for="confirmPassword" class="form-label">Confirm Password</label>
-                        <input type="password" id="confirmPassword" class="form-control" name="confirmPassword"
-                             required>
+                        <input type="password" id="confirmPassword" class="form-control"
+                            [(ngModel)]="passwordData.confirm_password" name="confirm_password" required>
                     </div>
-                    <button type="submit" class="btn btn-primary" >Save Changes</button>
+                    <button type="submit" class="btn btn-primary">Save Changes</button>
                 </form>
             </div>
         </div>
