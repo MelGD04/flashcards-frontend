@@ -99,7 +99,7 @@
 
 .modal-dark .custom-card {
   background: transparent;
-  color:#f3f4f6;
+  color:white;
   border-radius: 20px;
 }
 .modal-light .custom-card{
@@ -107,8 +107,11 @@
   color: #111827;
   border-radius: 20px;
 }
-
-.username-display {
+.modal-dark .username-display{
+  font-weight: 600;
+  color: #f3f4f6;
+}
+.modal-light .username-display {
     font-weight: 600;
     color: #111827;
 }
