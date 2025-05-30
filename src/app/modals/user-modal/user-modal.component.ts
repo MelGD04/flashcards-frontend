@@ -42,7 +42,8 @@ export class UserModalComponent {
     this.isLoading = true;
     this.authService.getCurrentUser().subscribe(
       (data) => {
-        this.username = data.userData.username;
+        this.userData.username = data.username; // Almacenar el username en dataUser
+        // Puedes almacenar otros datos del usuario aquí si es necesario
       },
       (error) => {
         this.handleError(error, 'Error fetching current user.');
@@ -103,6 +104,11 @@ export class UserModalComponent {
   }
 
   saveChanges(): void {
+    if (!this.userData.username || !this.passwordData.current_password) {
+      alert('Username and current password are required!');
+      return;
+    }
+
     const userData = {
       username: this.userData.username,
       current_password: this.passwordData.current_password,
@@ -114,10 +120,13 @@ export class UserModalComponent {
       next: (response) => {
         console.log('Changes saved successfully:', response);
         alert('Changes saved successfully!');
+        this.isEditingUsername = false;
+        this.passwordData = { current_password: '', new_password: '', confirm_password: '' };
       },
       error: (error) => {
+        const errorMessage = error?.error?.message || 'Failed to save changes. Please try again.';
         console.error('Error saving changes:', error);
-        alert('Failed to save changes. Please try again.');
+        alert(errorMessage);
       }
     });
   }

@@ -104,8 +104,15 @@ export class AuthService {
     );
   }
 
-  updateUser(data: { username: string; current_password: string; new_password?: string; new_password_confirm?: string }): Observable<any> {
+  updateUser(data: { username?: string; current_password: string; new_password?: string; new_password_confirm?: string }): Observable<any> {
     const headers = this.getAuthHeaders();
-    return this.http.put('http://127.0.0.1:8000/api/user/change/', data, { headers });
+    const url = 'http://127.0.0.1:8000/api/user/change/';
+
+    return this.http.put(url, data, { headers }).pipe(
+      catchError(error => {
+        console.error('Error updating user data:', error);
+        return throwError(() => error);
+      })
+    );
   }
 }
