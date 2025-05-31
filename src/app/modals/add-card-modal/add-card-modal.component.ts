@@ -83,28 +83,24 @@ export class AddCardModalComponent implements OnInit {
   }
 
   // Agregar una nueva categoría
-  addCategory(): void {
+  createCategory(): void {
     if (!this.newCategoryName.trim()) {
-      console.error('Category name cannot be empty.');
+      alert('Category name is required!');
       return;
     }
 
-    const token = localStorage.getItem('access_token'); // Verificar si el token está disponible
-    if (!token) {
-      console.error('No access token found. User is not authenticated.');
-      return;
-    }
+    const categoryData = { category_name: this.newCategoryName };
+    console.log('Data being sent to the backend:', categoryData); // Log para depuración
 
-    this.categoryService.createCategory(this.newCategoryName).subscribe(
-      (data) => {
-        console.log('Category added:', data);
-        this.categories.push(data); // Agregar la nueva categoría a la lista
-        this.newFlashcard.category = data.category_name; // Seleccionar la nueva categoría
-        this.newCategoryName = ''; // Limpiar el campo de entrada
+    this.categoryService.createCategory(categoryData).subscribe({
+      next: (response) => {
+        alert('Category created successfully!');
+        this.newCategoryName = '';
       },
-      (error) => {
+      error: (error) => {
         console.error('Error adding category:', error);
+        alert('Failed to add category. Please try again.');
       }
-    );
+    });
   }
 }

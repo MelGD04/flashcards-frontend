@@ -69,18 +69,15 @@ export class UserModalComponent {
     this.authService.updateUser(userData).subscribe({
       next: (response) => {
         console.log('User updated successfully:', response);
-        alert('Username updated successfully!');
       },
       error: (error) => {
         console.error('Error updating username:', error);
-        alert('Failed to update username. Please try again.');
       }
     });
   }
 
   updatePassword(): void {
     if (this.passwordData.new_password !== this.passwordData.confirm_password) {
-      alert('Passwords do not match!');
       return;
     }
 
@@ -94,11 +91,9 @@ export class UserModalComponent {
     this.authService.updateUser(passwordUpdateData).subscribe({
       next: (response) => {
         console.log('Password updated successfully:', response);
-        alert('Password updated successfully!');
       },
       error: (error) => {
         console.error('Error updating password:', error);
-        alert('Failed to update password. Please try again.');
       }
     });
   }
@@ -116,10 +111,11 @@ export class UserModalComponent {
       new_password_confirm: this.passwordData.confirm_password
     };
 
+    console.log('Data being sent to the backend:', userData); // Log para verificar los datos
+
     this.authService.updateUser(userData).subscribe({
       next: (response) => {
         console.log('Changes saved successfully:', response);
-        alert('Changes saved successfully!');
         this.isEditingUsername = false;
         this.passwordData = { current_password: '', new_password: '', confirm_password: '' };
       },

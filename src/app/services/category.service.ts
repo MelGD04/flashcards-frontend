@@ -8,7 +8,7 @@ import { isPlatformBrowser } from '@angular/common';
   providedIn: 'root'
 })
 export class CategoryService {
-  private apiUrl = 'http://127.0.0.1:8000/api/auth/categories/'; // URL base para categorías
+  private apiUrl = 'http://127.0.0.1:8000/api/auth/'; // URL base para categorías
   private apiUrlAddCategory = 'http://127.0.0.1:8000/api/auth/add/';
   private apiUrlFlashcardsbyCategory = 'http://127.0.0.1:8000/api/auth/';
 
@@ -20,26 +20,26 @@ export class CategoryService {
   // Obtener todas las categorías
   getCategories(): Observable<any> {
     const headers = this.getAuthHeaders();
+    return this.http.get(`${this.apiUrl}categories/`, { headers }).pipe(
+      catchError((error) => {
+        if (error.status === 401) {
+          alert('You must be logged in to view categories.');
+        }
+        return throwError(() => error);
+      })
+    );
+  }
+  // Obtener Flashcards de la misma categoría
+  getFlashcardsByCategory(categoryName: string): Observable<any> {
+    const headers = this.getAuthHeaders();
     return this.http.get(this.apiUrl, { headers }).pipe(
       catchError((error) => this.handleError(error))
     );
   }
-
-  // Obtener Flashcards de la misma categoría
-  getFlashcardsByCategory(categoryName: string): Observable<any> {
-    const headers = this.getAuthHeaders();
-    return this.http.get(`${this.apiUrlFlashcardsbyCategory}${categoryName}/cards/`, { headers }).pipe(
-      catchError((error) => this.handleError(error))
-    );
-  }
-
   // Crear una nueva categoría
-  createCategory(categoryName: string): Observable<any> {
-    const headers = this.getAuthHeaders(); // Incluye el token de autenticación
-    const body = { category_name: categoryName }; // Datos de la nueva categoría
-    return this.http.post(`${this.apiUrlAddCategory}`, body, { headers }).pipe(
-      catchError((error) => this.handleError(error))
-    );
+  createCategory(categoryData: { category_name: string }): Observable<any> {
+    const headers = this.getAuthHeaders();
+    return this.http.post(`${this.apiUrl}add/`, categoryData, { headers });
   }
 
   // Obtener encabezados de autenticación

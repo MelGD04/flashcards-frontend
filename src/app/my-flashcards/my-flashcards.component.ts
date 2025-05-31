@@ -35,15 +35,14 @@ export class MyFlashcardsComponent implements OnInit {
 
   // Cargar categorías existentes
   loadCategories(): void {
-    this.categoryService.getCategories().subscribe(
-      (data: any[]) => {
-        this.categories = data; // Asigna las categorías obtenidas
-        console.log('Categories loaded:', this.categories); // Depuración
+    this.categoryService.getCategories().subscribe({
+      next: (data) => {
+        this.categories = data;
       },
-      (error) => {
-        console.error('Error fetching categories:', error); // Manejo de errores
+      error: (error) => {
+        console.error('Error fetching categories:', error);
       }
-    );
+    });
   }
 
   // Cargar flashcards de la categoría seleccionada

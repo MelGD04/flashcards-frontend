@@ -89,18 +89,16 @@ export class CrudCardModalComponent implements OnInit {
       return;
     }
 
-    this.categoryService.createCategory(this.newCategoryName).subscribe(
-      (response) => {
-        console.log('Category added successfully:', response);
-        this.categories.push(response); // Agregar la nueva categoría a la lista
-        this.newCategoryName = ''; // Limpiar el campo de entrada
-        this.currentFlashcard.category = response.name; // Asignar la nueva categoría a la tarjeta actual
+    this.categoryService.createCategory({ category_name: this.newCategoryName }).subscribe({
+      next: (response) => {
+        alert('Category created successfully!');
+        this.newCategoryName = '';
       },
-      (error) => {
+      error: (error) => {
         console.error('Error adding category:', error);
-        this.errorMessage = 'Failed to add category.';
+        alert('Failed to add category. Please try again.');
       }
-    );
+    });
   }
 
   // Actualizar una tarjeta
