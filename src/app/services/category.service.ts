@@ -32,7 +32,7 @@ export class CategoryService {
   // Obtener Flashcards de la misma categoría
   getFlashcardsByCategory(categoryName: string): Observable<any> {
     const headers = this.getAuthHeaders();
-    return this.http.get(this.apiUrl, { headers }).pipe(
+    return this.http.get(`${this.apiUrl}${categoryName}/cards/`, { headers }).pipe(
       catchError((error) => this.handleError(error))
     );
   }
