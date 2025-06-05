@@ -56,8 +56,7 @@ export class FlashcardsComponent implements OnInit {
 
   loadFlashcards(): void {
     if (!this.isLoggedIn) {
-      console.warn('User is not authenticated. Skipping request.');
-      return;
+      return; // Si el usuario no está autenticado, no se cargan las tarjetas
     }
 
     this.isLoading = true;
@@ -66,12 +65,16 @@ export class FlashcardsComponent implements OnInit {
         this.flashcards = data;
         if (this.flashcards.length) {
           this.currentIndex = 0;
-          this.currentCard = this.flashcards[0];
-          this.checkIfFavorite(this.currentCard.card_id);
+          this.currentCard = this.flashcards[0]; // Asigna la primera tarjeta como la actual
+          this.flashcardsService.setCurrentCard(this.currentCard); // Actualiza el servicio compartido
+          this.checkIfFavorite(this.currentCard.card_id); // Verifica si la tarjeta es favorita
+        } else {
+          console.warn('No flashcards found.');
+          this.currentCard = null; // No hay tarjetas disponibles
         }
       },
       error => this.handleError(error, 'Error fetching flashcards.'),
-      () => (this.isLoading = false)
+      () => (this.isLoading = false) // Finaliza la carga
     );
   }
 
@@ -84,10 +87,11 @@ export class FlashcardsComponent implements OnInit {
   }
 
   private navigateToCard(index: number): void {
-    if (index < 0 || index >= this.flashcards.length) return;
+    if (index < 0 || index >= this.flashcards.length) return; // Asegúrate de que el índice sea válido
     this.currentIndex = index;
-    this.currentCard = this.flashcards[index];
-    this.checkIfFavorite(this.currentCard.card_id);
+    this.currentCard = this.flashcards[index]; // Actualiza la tarjeta actual en el componente
+    this.flashcardsService.setCurrentCard(this.currentCard); // Actualiza la tarjeta actual en el servicio compartido
+    this.checkIfFavorite(this.currentCard.card_id); // Verifica si la tarjeta es favorita
   }
 
   checkIfFavorite(cardId: number): void {

@@ -85,7 +85,6 @@ export class AddCardModalComponent implements OnInit {
   // Agregar una nueva categoría
   createCategory(): void {
     if (!this.newCategoryName.trim()) {
-      alert('Category name is required!');
       return;
     }
 
@@ -94,12 +93,17 @@ export class AddCardModalComponent implements OnInit {
 
     this.categoryService.createCategory(categoryData).subscribe({
       next: (response) => {
-        alert('Category created successfully!');
+        // Agregar la nueva categoría a la lista local
+        this.categories.push({ category_name: this.newCategoryName });
+
+        // Seleccionar automáticamente la nueva categoría
+        this.newFlashcard.category = this.newCategoryName;
+
+        // Limpiar el campo de entrada
         this.newCategoryName = '';
       },
       error: (error) => {
         console.error('Error adding category:', error);
-        alert('Failed to add category. Please try again.');
       }
     });
   }

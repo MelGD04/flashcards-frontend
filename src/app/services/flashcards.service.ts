@@ -1,6 +1,6 @@
 import { Inject, Injectable, PLATFORM_ID } from "@angular/core";
 import { HttpClient, HttpHeaders } from "@angular/common/http";
-import { catchError, Observable, throwError } from "rxjs";
+import { BehaviorSubject, catchError, Observable, throwError } from "rxjs";
 import { isPlatformBrowser } from "@angular/common";
 
 @Injectable({
@@ -12,10 +12,15 @@ export class FlashcardsService {
     private apiUrlDelete = 'http://127.0.0.1:8000/api/auth/delete-card/';
     private apiUrl = 'http://127.0.0.1:8000/api/auth/';
 
+    private currentCardSubject = new BehaviorSubject<any>(null); // Almacena la tarjeta actual
+    currentCard$ = this.currentCardSubject.asObservable(); // Observable para suscribirse
+
     constructor(
         private http: HttpClient,
         @Inject(PLATFORM_ID) private platformId: Object
     ) { }
+
+    
 
     // Obtener todas las tarjetas
     getFlashcards(): Observable<any> {
@@ -23,6 +28,16 @@ export class FlashcardsService {
         return this.http.get(this.apiUrlCard, { headers }).pipe(
             catchError((error) => this.handleError(error))
         );
+    }
+
+    // Establecer la tarjeta actual
+    setCurrentCard(card: any): void {
+        this.currentCardSubject.next(card); // Actualiza la tarjeta actual
+    }
+
+    // Obtener la tarjeta actual
+    getCurrentCard(): any {
+        return this.currentCardSubject.value; // Devuelve la tarjeta actual
     }
 
     // Crear una nueva tarjeta
@@ -47,11 +62,10 @@ export class FlashcardsService {
     // Eliminar una tarjeta
     deleteCard(cardId: number): Observable<any> {
         const headers = this.getAuthHeaders();
-        if (!headers.has('Authorization')) {
-            return throwError(() => new Error('Unauthorized: No access token found.'));
-        }
-
         const url = `${this.apiUrl}${cardId}/delete/`;
+        console.log('URL being called:', url); // Log para depuración
+        console.log('Headers being sent:', headers); // Log para depuración
+
         return this.http.delete(url, { headers }).pipe(
             catchError((error) => {
                 console.error('Error deleting card:', error);

@@ -91,12 +91,10 @@ export class CrudCardModalComponent implements OnInit {
 
     this.categoryService.createCategory({ category_name: this.newCategoryName }).subscribe({
       next: (response) => {
-        alert('Category created successfully!');
         this.newCategoryName = '';
       },
       error: (error) => {
         console.error('Error adding category:', error);
-        alert('Failed to add category. Please try again.');
       }
     });
   }
@@ -138,7 +136,6 @@ export class CrudCardModalComponent implements OnInit {
     console.log('Deleting card with ID:', cardId);
     this.flashcardsService.deleteCard(cardId).subscribe({
     });
-    window.location.reload();
   }
 
   // Cambiar la tarjeta activa

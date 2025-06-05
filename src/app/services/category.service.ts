@@ -23,7 +23,7 @@ export class CategoryService {
     return this.http.get(`${this.apiUrl}categories/`, { headers }).pipe(
       catchError((error) => {
         if (error.status === 401) {
-          alert('You must be logged in to view categories.');
+          
         }
         return throwError(() => error);
       })
