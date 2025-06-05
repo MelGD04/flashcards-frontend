@@ -42,6 +42,11 @@ export class CategoryService {
     return this.http.post(`${this.apiUrl}add/`, categoryData, { headers });
   }
 
+  deleteCategory(categoryName: string): Observable<any> {
+    const headers = this.getAuthHeaders(); 
+    return this.http.delete(`${this.apiUrl}${categoryName}/delete/`, {headers});
+  }
+
   // Obtener encabezados de autenticación
   private getAuthHeaders(): HttpHeaders {
     let headers = new HttpHeaders();

@@ -19,6 +19,7 @@ export class MyFlashcardsComponent implements OnInit {
   newCategoryName: string = ''; // Nombre de la nueva categoría
   selectedCategory: string | null = null; // Categoría seleccionada
   isLightTheme = true; // Tema actual
+  flashcardsByCategory: { [key: string]: any[] } = {}; // Flashcards agrupadas por categoría
 
   constructor(
     private flashcardServices: FlashcardsService,
@@ -36,9 +37,22 @@ export class MyFlashcardsComponent implements OnInit {
   // Cargar categorías existentes
   loadCategories(): void {
     this.categoryService.getCategories().subscribe(
-      (data: any[]) => {
-        this.categories = data; // Asigna las categorías obtenidas
+      (categories: any[]) => {
+        this.categories = categories; // Asigna las categorías obtenidas
         console.log('Categories loaded:', this.categories); // Depuración
+
+        // Cargar flashcards para cada categoría
+        this.categories.forEach((category) => {
+          this.categoryService.getFlashcardsByCategory(category.category_name).subscribe(
+            (flashcards: any[]) => {
+              this.flashcardsByCategory[category.category_name] = flashcards; // Agrupar flashcards por categoría
+              console.log(`Flashcards for ${category.category_name}:`, flashcards); // Depuración
+            },
+            (error) => {
+              console.error(`Error fetching flashcards for ${category.category_name}:`, error); // Manejo de errores
+            }
+          );
+        });
       },
       (error) => {
         console.error('Error fetching categories:', error); // Manejo de errores
@@ -68,6 +82,27 @@ export class MyFlashcardsComponent implements OnInit {
     }
     this.selectedCategory = categoryName.toString(); // Actualiza la categoría seleccionada
     this.loadFlashcardsByCategory(categoryName); // Carga las flashcards de la categoría seleccionada
+  }
+
+  deleteCategory(category: any): void {
+    console.log('Category to delete:', category); // Depuración
+    if (!category || !category.category_name) {
+      console.error('Invalid category object:', category);
+      return;
+    }
+
+    if (confirm(`Are you sure you want to delete the category "${category.category_name}"?`)) {
+      this.categoryService.deleteCategory(category.category_name).subscribe({
+        next: () => {
+          console.log(`Category "${category.category_name}" deleted successfully.`);
+          // Recargar la página
+          window.location.reload();
+        },
+        error: (error) => {
+          console.error('Error deleting category:', error);
+        }
+      });
+    }
   }
 
   // Alternar el tema

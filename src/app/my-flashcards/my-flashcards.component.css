@@ -63,3 +63,7 @@
 .flip-card:hover {
   transform: scale(1.05);
 }
+.delete{
+  background-color: transparent;
+  color:white;
+}

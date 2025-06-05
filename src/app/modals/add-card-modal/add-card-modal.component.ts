@@ -107,4 +107,10 @@ export class AddCardModalComponent implements OnInit {
       }
     });
   }
+
+  selectCategory(categoryName: string): void {
+    this.newFlashcard.category = categoryName;
+  }
+
+  
 }
