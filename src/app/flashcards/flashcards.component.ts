@@ -5,6 +5,7 @@ import { ThemeService } from './../services/theme.service';
 import { FlashcardsService } from './../services/flashcards.service';
 import { CrudCardModalComponent } from "../modals/crud-card-modal/crud-card-modal.component";
 import { FilterModalComponent } from "../modals/filter-modal/filter-modal.component";
+import { CategoryService } from '../services/category.service';
 
 @Component({
   selector: 'app-flashcards',
@@ -27,6 +28,7 @@ export class FlashcardsComponent implements OnInit {
   isLoggedIn = false;
   isLoading = false;
   errorMessage = '';
+  categories: string[] = [];
 
   private isBrowser: boolean;
 
@@ -34,6 +36,7 @@ export class FlashcardsComponent implements OnInit {
     private flashcardsService: FlashcardsService,
     private themeService: ThemeService,
     private authService: AuthService,
+    private categoryService: CategoryService,
     @Inject(PLATFORM_ID) platformId: Object
   ) {
     this.isBrowser = isPlatformBrowser(platformId);
@@ -121,6 +124,39 @@ export class FlashcardsComponent implements OnInit {
 
   flipCard(): void {
     this.isFlipped = !this.isFlipped;
+  }
+
+  applyFilters(filters: { category: string; difficulty: string }): void {
+    console.log('Filters received:', filters); // Depuración
+
+    const { category, difficulty } = filters;
+
+    if (!category) {
+      console.warn('No category selected. Cannot apply filters.');
+      return;
+    }
+
+    this.isLoading = true;
+    this.categoryService.getCardsByCategoryAndDifficulty(category, difficulty).subscribe(
+      (data) => {
+        this.flashcards = data;
+        console.log('Filtered flashcards:', this.flashcards); // Depuración
+
+        // Actualizar la tarjeta actual con la primera tarjeta filtrada
+        if (this.flashcards.length > 0) {
+          this.currentIndex = 0; // Reinicia el índice
+          this.currentCard = this.flashcards[0]; // Asigna la primera tarjeta como la actual
+        } else {
+          this.currentCard = null; // No hay tarjetas disponibles
+        }
+
+        this.isLoading = false;
+      },
+      (error) => {
+        console.error('Error fetching filtered flashcards:', error);
+        this.isLoading = false;
+      }
+    );
   }
 
   private handleError(error: any, defaultMessage: string): void {

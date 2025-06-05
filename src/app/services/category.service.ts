@@ -23,7 +23,7 @@ export class CategoryService {
     return this.http.get(`${this.apiUrl}categories/`, { headers }).pipe(
       catchError((error) => {
         if (error.status === 401) {
-          
+
         }
         return throwError(() => error);
       })
@@ -43,8 +43,22 @@ export class CategoryService {
   }
 
   deleteCategory(categoryName: string): Observable<any> {
-    const headers = this.getAuthHeaders(); 
-    return this.http.delete(`${this.apiUrl}${categoryName}/delete/`, {headers});
+    const headers = this.getAuthHeaders();
+    return this.http.delete(`${this.apiUrl}${categoryName}/delete/`, { headers });
+  }
+
+  getCardsByCategoryAndDifficulty(categoryName: string, difficulty?: string): Observable<any[]> {
+    const headers = this.getAuthHeaders();
+    let url = `${this.apiUrl}categories/${categoryName}/cards/`; // Eliminada la codificación
+
+    // Agregar el filtro de dificultad si está presente
+    if (difficulty) {
+      url += `?difficulty=${difficulty}`;
+    }
+
+    return this.http.get<any[]>(url, { headers }).pipe(
+      catchError((error) => this.handleError(error))
+    );
   }
 
   // Obtener encabezados de autenticación

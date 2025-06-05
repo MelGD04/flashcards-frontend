@@ -4,35 +4,37 @@
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Filter Flashcard</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                <h5 class="modal-title" id="exampleModalLabel">Filter Flashcards</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
 
+                <!-- Selector de Categoría -->
                 <div class="mb-3">
-                    <label class="form-label" for="inputGroupSelect01">Category:</label>
-                    <select class="form-select rounded-pill" id="inputGroupSelect01">
-                        <option selected>Choose...</option>
-                        <option value="1">One</option>
-                        <option value="2">Two</option>
-                        <option value="3">Three</option>
+                    <label class="form-label" for="categorySelect">Category:</label>
+                    <select class="form-select rounded-pill" id="categorySelect" [(ngModel)]="selectedCategory">
+                        <option value="" selected>Choose...</option>
+                        <option *ngFor="let category of categories" [value]="category.category_name">
+                            {{ category.category_name }}
+                        </option>
                     </select>
                 </div>
 
+                <!-- Selector de Dificultad -->
                 <div class="mb-3">
-                    <label class="form-label" for="inputGroupSelect01">Difficulty:</label>
-                    <select class="form-select rounded-pill" id="inputGroupSelect01">
-                        <option selected>Choose...</option>
-                        <option value="1">Easy</option>
-                        <option value="2">Intermediate</option>
-                        <option value="3">Hard</option>
+                    <label class="form-label" for="difficultySelect">Difficulty:</label>
+                    <select class="form-select rounded-pill" id="difficultySelect" [(ngModel)]="selectedDifficulty">
+                        <option value="" selected>Choose...</option>
+                        <option value="easy">Easy</option>
+                        <option value="medium">Intermediate</option>
+                        <option value="hard">Hard</option>
                     </select>
                 </div>
 
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary rounded-pill w-25" data-bs-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary rounded-pill w-25">Filter</button>
+                <button type="button" class="btn btn-primary rounded-pill w-25" (click)="applyFilters()" data-bs-dismiss="modal">Filter</button>
             </div>
         </div>
     </div>
