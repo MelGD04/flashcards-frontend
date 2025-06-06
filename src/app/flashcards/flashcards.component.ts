@@ -6,6 +6,7 @@ import { FlashcardsService } from './../services/flashcards.service';
 import { CrudCardModalComponent } from "../modals/crud-card-modal/crud-card-modal.component";
 import { FilterModalComponent } from "../modals/filter-modal/filter-modal.component";
 import { CategoryService } from '../services/category.service';
+import { ProgressService } from '../services/progress.service';
 
 @Component({
   selector: 'app-flashcards',
@@ -29,6 +30,8 @@ export class FlashcardsComponent implements OnInit {
   isLoading = false;
   errorMessage = '';
   categories: string[] = [];
+  dominatedCount: number = 0;
+  notDominatedCount: number = 0;
 
   private isBrowser: boolean;
 
@@ -37,6 +40,7 @@ export class FlashcardsComponent implements OnInit {
     private themeService: ThemeService,
     private authService: AuthService,
     private categoryService: CategoryService,
+    private progressService: ProgressService,
     @Inject(PLATFORM_ID) platformId: Object
   ) {
     this.isBrowser = isPlatformBrowser(platformId);
@@ -197,5 +201,24 @@ export class FlashcardsComponent implements OnInit {
       this.flashcards[index] = updatedCard; // Actualiza la tarjeta en la lista
       console.log(`Card with ID ${updatedCard.card_id} updated successfully.`);
     }
+  }
+
+  // Método para actualizar el progreso de una tarjeta
+  updateCardProgress(cardId: number, accion: string): void {
+    this.progressService.updateProgress(cardId, accion).subscribe({
+      next: (response) => {
+        this.dominatedCount = response.dominated;
+        this.notDominatedCount = response.not_dominated;
+        console.log('Progress updated:', response);
+      },
+      error: (error) => {
+        if (error.status === 500) {
+          console.error('Internal Server Error:', error.error);
+          alert('An error occurred while updating progress. Please try again later.');
+        } else {
+          console.error('Error updating progress:', error);
+        }
+      }
+    });
   }
 }
