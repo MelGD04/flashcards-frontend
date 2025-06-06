@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { ThemeService } from '../../services/theme.service';
 import { CommonModule } from '@angular/common';
 import { FlashcardsService } from '../../services/flashcards.service';
@@ -15,14 +15,15 @@ import { FormsModule } from '@angular/forms';
   styleUrls: ['./crud-card-modal.component.css']
 })
 export class CrudCardModalComponent implements OnInit {
-  flashcards: any[] = []; // Lista de tarjetas
-  categories: any[] = []; // Lista de categorías
-  currentFlashcard: any = null; // Tarjeta actualmente seleccionada
+  @Input() currentFlashcard: any = null; // Tarjeta actualmente seleccionada
+  @Input() categories: any[] = []; // Lista de categorías
+  @Output() cardDeleted = new EventEmitter<number>(); // Notificar al componente padre sobre la eliminación
+  @Output() cardUpdated = new EventEmitter<any>(); // Notificar al componente padre sobre la actualización
+
   newCategoryName: string = ''; // Nombre de la nueva categoría
   isLightTheme = true; // Tema actual
   isLoading = false; // Estado de carga
   errorMessage: string | null = null; // Mensaje de error
-  currentIndex = 0;
 
   constructor(
     private themeService: ThemeService,
@@ -36,36 +37,12 @@ export class CrudCardModalComponent implements OnInit {
       this.isLightTheme = isLight;
     });
 
-    // Cargar las tarjetas y categorías al iniciar
-    this.loadFlashcards();
+    // Cargar las categorías al iniciar
     this.loadCategories();
   }
 
   toggleTheme(): void {
     this.themeService.toggleTheme();
-  }
-
-  // Cargar todas las tarjetas
-  loadFlashcards(): void {
-    this.isLoading = true;
-    this.flashcardsService.getFlashcards().subscribe(
-      (data) => {
-        this.flashcards = data;
-        if (this.flashcards.length > 0) {
-          this.currentFlashcard = this.flashcards[0]; // Seleccionar la primera tarjeta como activa
-        } else {
-          this.currentFlashcard = null; // No hay tarjetas disponibles
-        }
-      },
-      (error) => {
-        console.error('Error fetching flashcards:', error);
-        this.errorMessage = 'Failed to load flashcards.';
-        this.currentFlashcard = null; // Manejar el error adecuadamente
-      },
-      () => {
-        this.isLoading = false;
-      }
-    );
   }
 
   // Cargar todas las categorías
@@ -92,9 +69,11 @@ export class CrudCardModalComponent implements OnInit {
     this.categoryService.createCategory({ category_name: this.newCategoryName }).subscribe({
       next: (response) => {
         this.newCategoryName = '';
+        this.loadCategories(); // Recargar las categorías después de agregar una nueva
       },
       error: (error) => {
         console.error('Error adding category:', error);
+        this.errorMessage = 'Failed to add category.';
       }
     });
   }
@@ -119,6 +98,7 @@ export class CrudCardModalComponent implements OnInit {
       (response) => {
         console.log('Card updated successfully:', response);
         this.errorMessage = null;
+        this.cardUpdated.emit(response); // Notificar al componente padre sobre la actualización
       },
       (error) => {
         console.error('Error updating card:', error);
@@ -126,22 +106,28 @@ export class CrudCardModalComponent implements OnInit {
       },
       () => {
         this.isLoading = false;
-        location.reload();
       }
     );
   }
 
   // Eliminar una tarjeta
   deleteCard(cardId: number): void {
+    if (!cardId) {
+      console.warn('No card ID provided. Cannot delete.');
+      return;
+    }
+
     console.log('Deleting card with ID:', cardId);
     this.flashcardsService.deleteCard(cardId).subscribe({
+      next: () => {
+        console.log(`Card with ID ${cardId} deleted successfully.`);
+        this.currentFlashcard = null; // Limpiar la tarjeta actual después de eliminarla
+        this.cardDeleted.emit(cardId); // Notificar al componente padre sobre la eliminación
+      },
+      error: (error) => {
+        console.error('Error deleting card:', error);
+        this.errorMessage = 'Failed to delete card.';
+      }
     });
   }
-
-  // Cambiar la tarjeta activa
-  setCurrentFlashcard(card: any): void {
-    this.currentFlashcard = card;
-  }
-
-
 }

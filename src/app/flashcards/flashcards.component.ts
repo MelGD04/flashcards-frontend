@@ -159,6 +159,19 @@ export class FlashcardsComponent implements OnInit {
     );
   }
 
+  openDeleteModal(flashcard: any): void {
+    this.currentCard = flashcard;
+  }
+
+  openUpdateModal(flashcard: any): void {
+    this.currentCard = flashcard;
+  }
+
+  selectCard(card: any): void {
+    this.currentCard = card; // Establece la tarjeta seleccionada como la actual
+    console.log('Selected card:', this.currentCard);
+  }
+
   private handleError(error: any, defaultMessage: string): void {
     console.error(defaultMessage, error);
 
@@ -170,6 +183,19 @@ export class FlashcardsComponent implements OnInit {
       }
     } else {
       this.errorMessage = error?.error?.detail || defaultMessage;
+    }
+  }
+
+  onCardDeleted(cardId: number): void {
+    this.flashcards = this.flashcards.filter(card => card.card_id !== cardId); // Elimina la tarjeta de la lista
+    console.log(`Card with ID ${cardId} removed from the list.`);
+  }
+
+  onCardUpdated(updatedCard: any): void {
+    const index = this.flashcards.findIndex(card => card.card_id === updatedCard.card_id);
+    if (index !== -1) {
+      this.flashcards[index] = updatedCard; // Actualiza la tarjeta en la lista
+      console.log(`Card with ID ${updatedCard.card_id} updated successfully.`);
     }
   }
 }

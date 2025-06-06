@@ -101,13 +101,15 @@
 
             <!-- Botones inferiores -->
             <div class="card-crud d-flex gap-4">
-                <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#updateCardModal">
+                <button class="btn btn-primary" (click)="selectCard(currentCard)" data-bs-toggle="modal"
+                    data-bs-target="#updateCardModal">
                     <i class="fas fa-sync-alt"></i> Update Card
                 </button>
                 <button type="button" class="btn btn-outline-secondary border-0 m-0" (click)="toggleFavorite()">
                     <i [class]="isFavorite ? 'fas fa-star text-warning' : 'far fa-star'"></i>
                 </button>
-                <button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteCardModal">
+                <button class="btn btn-danger" (click)="selectCard(currentCard)" data-bs-toggle="modal"
+                    data-bs-target="#deleteCardModal">
                     <i class="fas fa-trash"></i> Delete Card
                 </button>
             </div>
@@ -120,6 +122,12 @@
     </div>
 </main>
 
-<app-crud-card-modal></app-crud-card-modal>
-<app-filter-modal [categories]="categories" (filtersApplied)="applyFilters($event)">
+<app-crud-card-modal
+    [currentFlashcard]="currentCard"
+    (cardDeleted)="onCardDeleted($event)"
+    (cardUpdated)="onCardUpdated($event)">>
+</app-crud-card-modal>
+<app-filter-modal 
+    [categories]="categories" 
+    (filtersApplied)="applyFilters($event)">
 </app-filter-modal>

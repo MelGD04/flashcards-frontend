@@ -12,8 +12,9 @@ export class FlashcardsService {
     private apiUrlDelete = 'http://127.0.0.1:8000/api/auth/delete-card/';
     private apiUrl = 'http://127.0.0.1:8000/api/auth/';
 
-    private currentCardSubject = new BehaviorSubject<any>(null); // Almacena la tarjeta actual
+    private currentCardSubject = new BehaviorSubject<number | null>(null); // Almacena la tarjeta actual
     currentCard$ = this.currentCardSubject.asObservable(); // Observable para suscribirse
+    private flashcards: any[] = []; // Almacena las tarjetas obtenidas
 
     constructor(
         private http: HttpClient,
@@ -36,10 +37,11 @@ export class FlashcardsService {
     }
 
     // Obtener la tarjeta actual
-    getCurrentCard(): any {
-        return this.currentCardSubject.value; // Devuelve la tarjeta actual
+    // Obtener el ID de la tarjeta actual
+    getCurrentCardId(): number | null {
+        return this.currentCardSubject.value; // Devuelve el ID actual
     }
-
+    
     // Crear una nueva tarjeta
     createFlashcard(data: any): Observable<any> {
         const headers = this.getAuthHeaders();
