@@ -32,6 +32,7 @@ export class FlashcardsComponent implements OnInit {
   categories: string[] = [];
   dominatedCount: number = 0;
   notDominatedCount: number = 0;
+  currentCardState: string | null = null;
 
   private isBrowser: boolean;
 
@@ -68,19 +69,33 @@ export class FlashcardsComponent implements OnInit {
 
     this.isLoading = true;
     this.flashcardsService.getFlashcards().subscribe(
-      data => {
+      (data) => {
         this.flashcards = data;
+
         if (this.flashcards.length) {
           this.currentIndex = 0;
           this.currentCard = this.flashcards[0]; // Asigna la primera tarjeta como la actual
           this.flashcardsService.setCurrentCard(this.currentCard); // Actualiza el servicio compartido
           this.checkIfFavorite(this.currentCard.card_id); // Verifica si la tarjeta es favorita
+
+          // Calcula los contadores iniciales
+          this.dominatedCount = this.flashcards.filter(
+            (card) => card.estado === 'dominates'
+          ).length;
+          this.notDominatedCount = this.flashcards.filter(
+            (card) => card.estado === 'does_not_dominate'
+          ).length;
+
+          console.log('Initial counts:', {
+            dominated: this.dominatedCount,
+            notDominated: this.notDominatedCount,
+          });
         } else {
           console.warn('No flashcards found.');
           this.currentCard = null; // No hay tarjetas disponibles
         }
       },
-      error => this.handleError(error, 'Error fetching flashcards.'),
+      (error) => this.handleError(error, 'Error fetching flashcards.'),
       () => (this.isLoading = false) // Finaliza la carga
     );
   }
@@ -163,13 +178,6 @@ export class FlashcardsComponent implements OnInit {
     );
   }
 
-  openDeleteModal(flashcard: any): void {
-    this.currentCard = flashcard;
-  }
-
-  openUpdateModal(flashcard: any): void {
-    this.currentCard = flashcard;
-  }
 
   selectCard(card: any): void {
     this.currentCard = card; // Establece la tarjeta seleccionada como la actual
@@ -205,20 +213,25 @@ export class FlashcardsComponent implements OnInit {
 
   // Método para actualizar el progreso de una tarjeta
   updateCardProgress(cardId: number, accion: string): void {
+    console.log(`Sending progress update for card ${cardId} with action ${accion}`);
     this.progressService.updateProgress(cardId, accion).subscribe({
       next: (response) => {
-        this.dominatedCount = response.dominated;
-        this.notDominatedCount = response.not_dominated;
-        console.log('Progress updated:', response);
+        console.log('Response received:', response);
+        if (response.dominated !== null) {
+          this.dominatedCount = response.dominated;
+        }
+        if (response.not_dominated !== null) {
+          this.notDominatedCount = response.not_dominated;
+        }
+        this.currentCardState = accion;
+        console.log('Updated counts:', {
+          dominated: this.dominatedCount,
+          notDominated: this.notDominatedCount,
+        });
       },
       error: (error) => {
-        if (error.status === 500) {
-          console.error('Internal Server Error:', error.error);
-          alert('An error occurred while updating progress. Please try again later.');
-        } else {
-          console.error('Error updating progress:', error);
-        }
-      }
+        console.error('Error updating progress:', error);
+      },
     });
   }
 }

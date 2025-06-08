@@ -21,13 +21,13 @@ export class ProgressService {
 
   // Actualizar el progreso de una tarjeta
   updateProgress(cardId: number, accion: string): Observable<any> {
-    const headers = this.getAuthHeaders();
+    const headers = this.getAuthHeaders(); // Obtiene los encabezados con el token de autenticación
     const body = {
       card_id: cardId,
-      accion: accion
+      accion: accion // 'dominates' o 'does_not_dominate'
     };
 
-    console.log('Sending progress update:', body);
-    return this.http.post(this.apiUrl, body, { headers });
+    console.log('Sending progress update:', body); // Log para depuración
+    return this.http.post(this.apiUrl, body, { headers }); // Realiza la solicitud POST al backend
   }
 }
