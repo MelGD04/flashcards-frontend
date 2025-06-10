@@ -33,6 +33,8 @@ export class FlashcardsComponent implements OnInit {
   dominatedCount: number = 0;
   notDominatedCount: number = 0;
   currentCardState: string | null = null;
+  revisedCards: number = 0;
+  revisedCardIds: Set<number> = new Set(); // IDs de tarjetas revisadas
 
   private isBrowser: boolean;
 
@@ -60,6 +62,13 @@ export class FlashcardsComponent implements OnInit {
     this.themeService.getTheme().subscribe(isLight => {
       this.isLightTheme = isLight;
     });
+
+    // Marca la primera tarjeta como revisada al cargar el componente
+    if (this.flashcards.length > 0) {
+      this.revisedCardIds.add(this.flashcards[0].card_id); // Marca la primera tarjeta como revisada
+      this.revisedCards = 1; // Inicializa el contador en 1
+      this.updateProgressBar(); // Actualiza la barra de progreso
+    }
   }
 
   loadFlashcards(): void {
@@ -78,18 +87,10 @@ export class FlashcardsComponent implements OnInit {
           this.flashcardsService.setCurrentCard(this.currentCard); // Actualiza el servicio compartido
           this.checkIfFavorite(this.currentCard.card_id); // Verifica si la tarjeta es favorita
 
-          // Calcula los contadores iniciales
-          this.dominatedCount = this.flashcards.filter(
-            (card) => card.estado === 'dominates'
-          ).length;
-          this.notDominatedCount = this.flashcards.filter(
-            (card) => card.estado === 'does_not_dominate'
-          ).length;
-
-          console.log('Initial counts:', {
-            dominated: this.dominatedCount,
-            notDominated: this.notDominatedCount,
-          });
+          // Marca la primera tarjeta como revisada
+          this.revisedCardIds.add(this.flashcards[0].card_id);
+          this.revisedCards = 1;
+          this.updateProgressBar();
         } else {
           console.warn('No flashcards found.');
           this.currentCard = null; // No hay tarjetas disponibles
@@ -110,10 +111,34 @@ export class FlashcardsComponent implements OnInit {
 
   private navigateToCard(index: number): void {
     if (index < 0 || index >= this.flashcards.length) return; // Asegúrate de que el índice sea válido
+
+    // Si avanzas a una tarjeta nueva, márcala como revisada
+    if (index > this.currentIndex && !this.revisedCardIds.has(this.flashcards[index].card_id)) {
+      this.revisedCardIds.add(this.flashcards[index].card_id); // Marca la tarjeta como revisada
+      this.revisedCards++; // Incrementa el contador de tarjetas revisadas
+    }
+
+    // Si retrocedes y la tarjeta actual estaba marcada como revisada, desmárcala
+    if (index < this.currentIndex && this.revisedCardIds.has(this.flashcards[this.currentIndex].card_id)) {
+      this.revisedCardIds.delete(this.flashcards[this.currentIndex].card_id); // Elimina la tarjeta del conjunto de revisadas
+      this.revisedCards--; // Decrementa el contador de tarjetas revisadas
+    }
+
+    // Actualiza el índice y la tarjeta actual
     this.currentIndex = index;
-    this.currentCard = this.flashcards[index]; // Actualiza la tarjeta actual en el componente
-    this.flashcardsService.setCurrentCard(this.currentCard); // Actualiza la tarjeta actual en el servicio compartido
+    this.currentCard = this.flashcards[index];
+    this.flashcardsService.setCurrentCard(this.currentCard); // Actualiza el servicio compartido
     this.checkIfFavorite(this.currentCard.card_id); // Verifica si la tarjeta es favorita
+
+    // Actualiza la barra de progreso
+    this.updateProgressBar();
+  }
+
+  // Método para actualizar la barra de progreso
+  private updateProgressBar(): void {
+    const progressElement = document.querySelector('.progress-bar-vertical') as HTMLElement;
+    const progressPercentage = (this.revisedCards / this.flashcards.length) * 100; // Basado en las tarjetas revisadas
+    progressElement.style.height = `${progressPercentage}%`;
   }
 
   checkIfFavorite(cardId: number): void {
@@ -213,25 +238,41 @@ export class FlashcardsComponent implements OnInit {
 
   // Método para actualizar el progreso de una tarjeta
   updateCardProgress(cardId: number, accion: string): void {
-    console.log(`Sending progress update for card ${cardId} with action ${accion}`);
-    this.progressService.updateProgress(cardId, accion).subscribe({
-      next: (response) => {
-        console.log('Response received:', response);
-        if (response.dominated !== null) {
-          this.dominatedCount = response.dominated;
-        }
-        if (response.not_dominated !== null) {
-          this.notDominatedCount = response.not_dominated;
-        }
-        this.currentCardState = accion;
-        console.log('Updated counts:', {
-          dominated: this.dominatedCount,
-          notDominated: this.notDominatedCount,
-        });
-      },
-      error: (error) => {
-        console.error('Error updating progress:', error);
-      },
+    console.log(`Updating progress for card ${cardId} with action ${accion}`);
+
+    // Actualiza los contadores localmente
+    if (accion === 'dominates') {
+      this.dominatedCount++;
+    } else if (accion === 'does_not_dominate') {
+      this.notDominatedCount++;
+    }
+
+    // Actualiza el estado de la tarjeta actual
+    this.currentCardState = accion;
+
+    console.log('Updated counts:', {
+      dominated: this.dominatedCount,
+      notDominated: this.notDominatedCount,
     });
+  }
+
+  // Método para obtener la precisión basada en las tarjetas dominadas
+  getPrecision(): number {
+    const totalMarked = this.dominatedCount + this.notDominatedCount;
+    if (totalMarked === 0) {
+      return 0; // Evita divisiones por cero
+    }
+    return (this.dominatedCount / totalMarked) * 100;
+  }
+
+  ngOnDestroy(): void {
+    this.resetProgress(); // Reinicia los contadores al salir del componente
+  }
+
+  resetProgress(): void {
+    this.dominatedCount = 0;
+    this.notDominatedCount = 0;
+    this.currentCardState = null;
+    console.log('Progress reset');
   }
 }

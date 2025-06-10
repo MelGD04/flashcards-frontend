@@ -50,11 +50,11 @@
             <!-- Estadísticas -->
             <div class="text-center small mt-2">
                 <p class="mb-0">
-                    <strong>revisedCards</strong> / {{ flashcards.length }} tarjetas
+                    <strong>{{revisedCards}}</strong> / {{ flashcards.length }} flashcards
                 </p>
                 <p class="mb-0 text-success"><i class="fas fa-check-circle"></i> {{dominatedCount}} </p>
                 <p class="mb-0 text-danger"><i class="fas fa-times-circle"></i> {{notDominatedCount}}</p>
-                <p class="mb-0">Precision:</p>
+                <p class="mb-0">Precision: <strong>{{ getPrecision() | number: '1.0-2' }}%</strong></p>
             </div>
         </div>
 
@@ -123,6 +123,28 @@
         <button class="btn nav-btn" (click)="nextCard()">
             <i class="fas fa-arrow-right"></i>
         </button>
+
+        <div class="d-flex flex-column justify-content-start align-items-center gap-2 p-3 rounded shadow-sm"
+            style="min-width: 160px; background: rgba(255, 255, 255, 0.1); height: 100%; box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3); border-radius:10px">
+            <h6 class="fw-bold">Progress</h6>
+        
+            <!-- Barra de progreso vertical -->
+            <div class="progress position-relative" style="width: 8px; height: 150px; background-color: #444;">
+                <div class="progress-bar-vertical bg-success position-absolute bottom-0" role="progressbar" aria-valuemin="0"
+                    aria-valuemax="100">
+                </div>
+            </div>
+        
+            <!-- Estadísticas -->
+            <div class="text-center small mt-2">
+                <p class="mb-0">
+                    <strong>{{revisedCards}}</strong> / {{ flashcards.length }} flashcards
+                </p>
+                <p class="mb-0 text-success"><i class="fas fa-check-circle"></i> {{dominatedCount}} </p>
+                <p class="mb-0 text-danger"><i class="fas fa-times-circle"></i> {{notDominatedCount}}</p>
+                <p class="mb-0">Precision: <strong>{{ getPrecision() | number: '1.0-2' }}%</strong></p>
+            </div>
+        </div>
     </div>
 </main>
 

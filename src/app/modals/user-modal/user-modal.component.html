@@ -21,12 +21,14 @@
                             <ng-template #editUsernameTemplate>
                                 <input type="text" class="form-control mb-2" [(ngModel)]="userData.username"
                                     name="username" required>
-                                <label class="form-label small">Current Password</label>
-                                <input type="password" class="form-control mb-2"
-                                    [(ngModel)]="passwordData.current_password" name="current_password" required>
-                                <button class="btn icon-btn" title="Cancel Edit" (click)="cancelEditUsername()">
-                                    <i class="fas" [ngClass]="isEditingUsername ? 'fa-times' : ''"></i>
-                                </button>
+                                <label class="form-label small mt-2">Current Password</label>
+                                <div class="d-flex align-items-center gap-2">
+                                    <input type="password" class="form-control" [(ngModel)]="passwordData.current_password" name="current_password"
+                                        required>
+                                    <button class="btn icon-btn" title="Cancel Edit">
+                                        <i class="fas fa-times"></i>
+                                    </button>
+                                </div>
                             </ng-template>
                         </div>
                         <div class="d-flex flex-column">
