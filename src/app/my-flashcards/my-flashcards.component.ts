@@ -85,21 +85,20 @@ export class MyFlashcardsComponent implements OnInit {
   }
 
   deleteCategory(category: any): void {
-    console.log('Category to delete:', category); // Depuración
-    if (!category || !category.category_name) {
-      console.error('Invalid category object:', category);
-      return;
-    }
-
     if (confirm(`Are you sure you want to delete the category "${category.category_name}"?`)) {
       this.categoryService.deleteCategory(category.category_name).subscribe({
         next: () => {
+          // Elimina la categoría de la lista local
+          this.categories = this.categories.filter(cat => cat.category_name !== category.category_name);
+
+          // También elimina las flashcards asociadas a la categoría
+          delete this.flashcardsByCategory[category.category_name];
+
           console.log(`Category "${category.category_name}" deleted successfully.`);
-          // Recargar la página
-          window.location.reload();
         },
-        error: (error) => {
-          console.error('Error deleting category:', error);
+        error: (err) => {
+          console.error('Error deleting category:', err);
+          alert('Failed to delete the category. Please try again.');
         }
       });
     }
