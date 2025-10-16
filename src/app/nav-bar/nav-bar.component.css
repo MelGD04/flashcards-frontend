@@ -100,7 +100,8 @@
   border-radius: 50%;
   border: 2px solid white;
 }
-.user-avatar {
+.user-avatar,
+.btn.p-0.rounded-circle img {
   width: 40px;
   height: 40px;
   border-radius: 50%;

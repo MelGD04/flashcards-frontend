@@ -224,8 +224,14 @@
   }
 }
 
-
-
+@media (max-width: 576px) {
+  .no-login,
+  .no-cards-message,
+  main.container {
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+  }
+}
 
 /* 1) Centrar todo el grupo nav-btn + flashcard */
 main.container > .d-flex.justify-content-around {

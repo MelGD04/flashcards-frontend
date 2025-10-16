@@ -38,6 +38,9 @@ export class FlashcardsComponent implements OnInit {
 
   private isBrowser: boolean;
 
+  touchStartX: number = 0;
+  touchEndX: number = 0;
+
   constructor(
     private flashcardsService: FlashcardsService,
     private themeService: ThemeService,
@@ -289,5 +292,26 @@ export class FlashcardsComponent implements OnInit {
     this.notDominatedCount = 0;
     this.currentCardState = null;
     console.log('Progress reset');
+  }
+
+  onTouchStart(event: TouchEvent) {
+    this.touchStartX = event.changedTouches[0].screenX;
+  }
+
+  onTouchEnd(event: TouchEvent) {
+    this.touchEndX = event.changedTouches[0].screenX;
+    this.handleSwipe();
+  }
+
+  handleSwipe() {
+    const minSwipeDistance = 50; // píxeles mínimos para considerar swipe
+    const deltaX = this.touchEndX - this.touchStartX;
+    if (Math.abs(deltaX) > minSwipeDistance) {
+      if (deltaX > 0) {
+        this.previousCard(); // Swipe derecha
+      } else {
+        this.nextCard(); // Swipe izquierda
+      }
+    }
   }
 }

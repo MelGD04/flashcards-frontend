@@ -1,7 +1,7 @@
 <!-- Si no está logueado -->
 <div *ngIf="!isLoggedIn" class="d-flex flex-column justify-content-center align-items-center vh-100"
     [ngClass]="{ 'cards-dark': !isLightTheme, 'cards-light': isLightTheme }">
-    <div class="no-login text-center mt-4">
+    <div class="no-login text-center">
         <i class="fas fa-lock fa-3x text-danger"></i>
         <h3 class="mt-2">You must be logged in to see your flashcards</h3>
         <p>Please log in to access your content.</p>
@@ -64,7 +64,9 @@
         </button>
 
         <!-- Flashcard -->
-        <div class="flashcard-container d-flex flex-column align-items-center gap-4">
+        <div class="flashcard-container d-flex flex-column align-items-center gap-4"
+        (touchstart)="onTouchStart($event)"
+  (touchend)="onTouchEnd($event)">
             <div class="flashcard">
                 <div class="flip-card" (click)="flipCard()">
                     <div class="flip-card-inner" [class.flipped]="isFlipped">
