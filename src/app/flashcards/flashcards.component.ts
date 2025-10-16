@@ -224,8 +224,23 @@ export class FlashcardsComponent implements OnInit {
   }
 
   onCardDeleted(cardId: number): void {
-    this.flashcards = this.flashcards.filter(card => card.card_id !== cardId); // Elimina la tarjeta de la lista
-    console.log(`Card with ID ${cardId} removed from the list.`);
+    // Elimina la tarjeta de la lista local
+    this.flashcards = this.flashcards.filter(card => card.card_id !== cardId);
+
+    // Recalcula los contadores
+    this.revisedCards = this.flashcards.filter(card => this.revisedCardIds.has(card.card_id)).length;
+    this.dominatedCount = this.flashcards.filter(card => card.estado === 'dominates').length;
+    this.notDominatedCount = this.flashcards.filter(card => card.estado === 'does_not_dominate').length;
+
+    // Actualiza la barra de progreso
+    this.updateProgressBar();
+
+    console.log('Card deleted:', cardId);
+    console.log('Updated progress:', {
+      revisedCards: this.revisedCards,
+      dominatedCount: this.dominatedCount,
+      notDominatedCount: this.notDominatedCount,
+    });
   }
 
   onCardUpdated(updatedCard: any): void {
