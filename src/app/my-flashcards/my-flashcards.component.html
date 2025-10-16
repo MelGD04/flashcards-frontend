@@ -1,50 +1,47 @@
 <div class="content d-flex flex-column justify-content-start align-items-center min-vh-100 w-100 gap-4 position-relative pt-5"
     [ngClass]="{ 'cards-dark': !isLightTheme, 'cards-light': isLightTheme }">
-    @if (!selectedCategory) {
-    <div class="text-center w-100 py-3 position-sticky top-0 shadow">
-        <h3 class="fw-bold"><i class="fas fa-book"></i> All Flashcards</h3>
-        <p class="text-secondary">Select a category to see the flashcards</p>
-    </div>
 
-    <div class="container py-4">
-        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4 justify-content-center">
-            @for (category of categories; track category) {
-            <div class="col d-flex justify-content-center">
-                <div class="card shadow-sm" (click)="onCategorySelect(category.category_name)">
-                    <div class="card-body text-center">
-                        <h5 class="card-title mb-0">{{ category.category_name }}</h5>
-                    </div>
-                    <div class="card-footer d-flex justify-content-between align-items-center">
-                        <span>Total: {{ flashcardsByCategory[category.category_name].length || 0 }} flashcards</span>
-                        <button type="button" class="btn delete btn-sm"
-                            (click)="deleteCategory(category); $event.stopPropagation()">
-                            <i class="fas fa-trash"></i>
-                        </button>
-                    </div>
-                </div>
-            </div>
-            }
+    @if(!isLoggedIn) {
+    <div class="d-flex flex-column justify-content-center align-items-center w-100 min-vh-100">
+      <div class="no-login text-center">
+        <i class="fas fa-lock fa-3x text-danger"></i>
+        <h3 class="mt-2">You must be logged in to see your flashcards</h3>
+        <p>Please log in to access your content.</p>
+      </div>
+    </div>
+  }
+
+  @else if(isLoggedIn && flashcards.length === 0) {
+        <div class="d-flex flex-column justify-content-center align-items-center w-100 min-vh-100">
+          <div class="no-cards-message text-center">
+            <i class="fas fa-exclamation-circle fa-3x text-warning"></i>
+            <h3 class="mt-2">No flashcards available</h3>
+            <p>Start by adding your first flashcard!</p>
+          </div>
         </div>
-    </div>
-
-
     }
 
-    @if (selectedCategory) {
-    <div class="d-flex flex-column justify-content-start align-items-center min-vh-100 w-100 gap-4 position-relative">
+    @else if(isLoggedIn && flashcards.length > 0){
+    @if (!selectedCategory) {
+        <div class="text-center w-100 py-3 position-sticky top-0 shadow">
+            <h3 class="fw-bold"><i class="fas fa-book"></i> All Flashcards</h3>
+            <p class="text-secondary">Select a category to see the flashcards</p>
+        </div>
 
-
-        <h3 class="text-center w-100 py-3 position-sticky top-0 shadow">
-            Flashcards iin Category:{{ selectedCategory }}
-        </h3>
-
-        <div class="container flex-grow-1 overflow-y-auto w-100 top-0 no-scrollbar pt-4">
-            <div class="row g-4 justify-content-center">
-                @for (flashcard of flashcards; track flashcard.id) {
-                <div class="col-12 col-sm-6 col-md-4 col-lg-3 d-flex justify-content-center">
-                    <div class="cardContainer">
-                        <div class="flip-card">
-                            <h5 class="card-title">{{ flashcard.question }}</h5>
+        <div class="container py-4">
+            <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4 justify-content-center">
+                @for (category of categories; track category) {
+                <div class="col d-flex justify-content-center">
+                    <div class="card shadow-sm" (click)="onCategorySelect(category.category_name)">
+                        <div class="card-body text-center">
+                            <h5 class="card-title mb-0">{{ category.category_name }}</h5>
+                        </div>
+                        <div class="card-footer d-flex justify-content-between align-items-center">
+                            <span>Total: {{ flashcardsByCategory[category.category_name].length || 0 }} flashcards</span>
+                            <button type="button" class="btn delete btn-sm"
+                                (click)="deleteCategory(category); $event.stopPropagation()">
+                                <i class="fas fa-trash"></i>
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -52,14 +49,35 @@
             </div>
         </div>
 
-        <button class="btn btn-outline-primary rounded-pill position-fixed bottom-0 mb-3" (click)="resetCategory()">
-            Back to the Categories
-        </button>
-    </div>
+
+        }
+
+        @if (selectedCategory) {
+        <div class="d-flex flex-column justify-content-start align-items-center min-vh-100 w-100 gap-4 position-relative">
+
+
+            <h3 class="text-center w-100 py-3 position-sticky top-0 shadow">
+                Flashcards iin Category:{{ selectedCategory }}
+            </h3>
+
+            <div class="container flex-grow-1 overflow-y-auto w-100 top-0 no-scrollbar pt-4">
+                <div class="row g-4 justify-content-center">
+                    @for (flashcard of flashcards; track flashcard.id) {
+                    <div class="col-12 col-sm-6 col-md-4 col-lg-3 d-flex justify-content-center">
+                        <div class="cardContainer">
+                            <div class="flip-card">
+                                <h5 class="card-title">{{ flashcard.question }}</h5>
+                            </div>
+                        </div>
+                    </div>
+                    }
+                </div>
+            </div>
+
+            <button class="btn btn-outline-primary rounded-pill position-fixed bottom-0 mb-3" (click)="resetCategory()">
+                Back to the Categories
+            </button>
+        </div>
+        }
     }
-
-
-
-
-
 </div>

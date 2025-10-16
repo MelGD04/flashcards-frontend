@@ -4,6 +4,7 @@ import { Component, OnInit } from '@angular/core';
 import { FlashcardsService } from './../services/flashcards.service';
 import { ThemeService } from '../services/theme.service';
 
+import { AuthService } from '../services/auth.service';
 
 @Component({
   selector: 'app-my-flashcards',
@@ -20,15 +21,18 @@ export class MyFlashcardsComponent implements OnInit {
   selectedCategory: string | null = null; // Categoría seleccionada
   isLightTheme = true; // Tema actual
   flashcardsByCategory: { [key: string]: any[] } = {}; // Flashcards agrupadas por categoría
+  isLoggedIn: boolean = false;
 
   constructor(
     private flashcardServices: FlashcardsService,
     private themeService: ThemeService,
-    private categoryService: CategoryService
+    private categoryService: CategoryService,
+    private authService: AuthService
   ) { }
 
   ngOnInit(): void {
     this.loadCategories(); // Cargar categorías al iniciar
+    this.isLoggedIn = this.authService.isAuthenticated();
     this.themeService.getTheme().subscribe((isLight) => {
       this.isLightTheme = isLight;
     });

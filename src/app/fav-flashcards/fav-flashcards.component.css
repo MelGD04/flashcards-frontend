@@ -45,4 +45,12 @@
   100% { transform: scale(1); }
 }
 
+@media (max-width: 576px) {
+  .no-login,
+  .no-cards-message,
+  main.container {
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+  }
+}
 
